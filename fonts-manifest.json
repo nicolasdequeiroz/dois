@@ -1,0 +1,48 @@
+{
+  "faces": [
+    {
+      "family": "STIX Two Text",
+      "file": "fonts/stix-two-text.ttf",
+      "format": "truetype",
+      "url": "https://assets.ycodeapp.com/assets/app126111/fonts/gUk0Myj0jWeV7dUGy1xX76JndfATOrv7eMkNWePD.ttf"
+    },
+    {
+      "family": "STIX Two Text Italic",
+      "file": "fonts/stix-two-text-italic.ttf",
+      "format": "truetype",
+      "url": "https://assets.ycodeapp.com/assets/app126111/fonts/R3PJAFhplJUQaE7tkSOH9t6MN0DdUo6qyBRUKegg.ttf"
+    },
+    {
+      "family": "DM Sans 9pt Regular",
+      "file": "fonts/dm-sans-9pt-regular.ttf",
+      "format": "truetype",
+      "url": "https://assets.ycodeapp.com/assets/app126111/fonts/Qlu5jY11bPGN3kaC5uDKGp4pdl1jkJ2ejwBGZbuZ.ttf"
+    }
+  ],
+  "inter": [
+    {
+      "family": "Inter",
+      "weight": "400",
+      "file": "fonts/inter-400.woff2",
+      "format": "woff2"
+    },
+    {
+      "family": "Inter",
+      "weight": "500",
+      "file": "fonts/inter-500.woff2",
+      "format": "woff2"
+    },
+    {
+      "family": "Inter",
+      "weight": "600",
+      "file": "fonts/inter-600.woff2",
+      "format": "woff2"
+    },
+    {
+      "family": "Inter",
+      "weight": "700",
+      "file": "fonts/inter-700.woff2",
+      "format": "woff2"
+    }
+  ]
+}
