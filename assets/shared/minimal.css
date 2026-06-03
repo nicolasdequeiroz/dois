@@ -1,0 +1,45 @@
+/* Páginas leves (blog, 404) */
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #0a0a0a;
+  color: #ffffff;
+  font-family: 'DM Sans 9pt Regular', ui-sans-serif, sans-serif;
+}
+.site-header {
+  padding: 16px 32px;
+  display: flex;
+  justify-content: center;
+}
+.site-header img { width: 100px; height: auto; }
+.page-main {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120px 32px;
+  text-align: center;
+}
+.page-main h1 {
+  font-family: 'STIX Two Text', serif;
+  font-size: clamp(32px, 6vw, 48px);
+  font-weight: 400;
+  margin: 0 0 16px;
+}
+.page-main p {
+  font-size: 18px;
+  opacity: 0.6;
+  max-width: 480px;
+  margin: 0 0 32px;
+  line-height: 1.5;
+}
+.page-main a {
+  color: #ffffff;
+  opacity: 0.8;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 12px;
+}
+.page-main a:hover { opacity: 1; }

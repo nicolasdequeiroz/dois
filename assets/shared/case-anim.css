@@ -1,0 +1,110 @@
+/* ==========================================
+     DIAGRAMAÇÃO DO GRID DE ESTATÍSTICAS
+     ========================================== */
+
+  /* 1. Transforma o Rich Text num Grid responsivo */
+  .results-rich-text {
+    display: grid !important;
+    /* Cria colunas automáticas. O minmax(200px) dita que se a tela apertar, ele quebra pra linha de baixo */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+    gap: 40px !important;
+    align-items: start !important;
+  }
+
+  /* 2. O Cartão criado pelo JavaScript */
+  .stat-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Espaço entre o número e o texto */
+    
+    /* Estética High-End: Linha no topo. 
+       O 'currentColor' com opacidade faz a linha funcionar perfeitamente 
+       tanto no fundo escuro quanto no claro! */
+    border-top: 1px solid color-mix(in srgb, currentColor 15%, transparent);
+    padding-top: 24px;
+  }
+
+  /* 3. Estiliza o Número (H2) */
+  .stat-card h2 {
+    font-size: 3.5rem !important; /* Tamanho massivo para impacto */
+    font-weight: 500 !important;
+    opacity: 1 !important;
+    letter-spacing: -0.04em !important; /* Letras mais juntinhas = mais refinado */
+    line-height: 1 !important;
+    margin: 0 !important;
+  }
+
+  /* 4. Estiliza o Texto (Parágrafo) */
+  .stat-card p {
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+    opacity: 0.6 !important; /* Deixa o texto secundário */
+    margin: 0 !important;
+  }
+
+
+
+  /* ==========================================
+     ESTÉTICA CORRIGIDA: ANTES (ESQ) / DEPOIS (DIR) + ANTI-SELEÇÃO
+     ========================================== */
+  
+  .ba-container {
+    --expose: 50%;
+    touch-action: none; 
+    
+    /* BLOQUEIO DE SELEÇÃO: Impede a tela de ficar azul ao arrastar */
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+  }
+
+  .ba-before {
+    z-index: 2;
+    clip-path: polygon(0 0, var(--expose) 0, var(--expose) 100%, 0 100%);
+    will-change: clip-path;
+  }
+
+  .ba-after {
+    z-index: 1;
+  }
+
+  /* Aplica a proteção fantasma nas duas imagens simultaneamente */
+  .ba-before, 
+  .ba-after {
+    /* Impede o navegador de tentar "puxar" o arquivo da imagem */
+    pointer-events: none !important;
+    -webkit-user-drag: none;
+  }
+
+  .ba-slider {
+    position: absolute;
+    z-index: 3; 
+    top: 0;
+    bottom: 0;
+    left: var(--expose); 
+    width: 2px; 
+    background-color: rgba(255, 255, 255, 0.8);
+    transform: translateX(-50%);
+    cursor: ew-resize;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ba-slider::after {
+    content: '';
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+  }
+
+  .ba-container:hover .ba-slider::after {
+    transform: scale(1.1);
+  }

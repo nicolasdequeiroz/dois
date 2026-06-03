@@ -1,0 +1,37 @@
+{
+  "name": "Yarden",
+  "slug": "yarden",
+  "cardText": "",
+  "segment": "",
+  "duration": "",
+  "services": [],
+  "headline": "",
+  "intro": [],
+  "challenge": [],
+  "strategicDecision": [],
+  "appliedStrategy": [],
+  "assets": {
+    "heroImage": "imagem-principal.webp",
+    "logoBefore": null,
+    "logoAfter": null,
+    "mainFilm": null,
+    "clientPhoto": null,
+    "logoCard": null
+  },
+  "mockups": [],
+  "verticalVideos": [
+    "conteúdo-vertical-1.mp4",
+    "conteúdo-vertical-2.mp4",
+    "conteúdo-vertical-3.mp4"
+  ],
+  "testimonial": {
+    "quote": "",
+    "name": "",
+    "role": ""
+  },
+  "results": [],
+  "seo": {
+    "title": "Case Yarden — Dois Intelligence",
+    "description": "Case de branding imobiliário Yarden pela Dois Intelligence."
+  }
+}

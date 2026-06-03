@@ -1,0 +1,16 @@
+{
+  "cases": [
+    {
+      "slug": "trifold",
+      "featured": true,
+      "order": 1,
+      "published": true
+    },
+    {
+      "slug": "yarden",
+      "featured": false,
+      "order": 2,
+      "published": true
+    }
+  ]
+}

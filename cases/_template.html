@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Case Yarden — Dois Intelligence</title>
-  <meta name="description" content="Case de branding imobiliário Yarden pela Dois Intelligence." />
+  <title>{{SEO_TITLE}}</title>
+  <meta name="description" content="{{SEO_DESCRIPTION}}" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-  <link rel="canonical" href="https://doisintelligence.com.br/cases/yarden.html" />
+  <link rel="canonical" href="https://doisintelligence.com.br/cases/{{SLUG}}.html" />
   <link rel="icon" href="../assets/library/dois-black-1.svg" type="image/svg+xml" />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://doisintelligence.com.br/cases/yarden.html" />
-  <meta property="og:title" content="Case Yarden — Dois Intelligence" />
-  <meta property="og:description" content="Case de branding imobiliário Yarden pela Dois Intelligence." />
-  <meta property="og:image" content="https://doisintelligence.com.br/assets/cases/yarden/imagem-principal.webp" />
+  <meta property="og:url" content="https://doisintelligence.com.br/cases/{{SLUG}}.html" />
+  <meta property="og:title" content="{{SEO_TITLE}}" />
+  <meta property="og:description" content="{{SEO_DESCRIPTION}}" />
+  <meta property="og:image" content="https://doisintelligence.com.br/assets/cases/{{SLUG}}/{{HERO_IMAGE}}" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="stylesheet" href="../assets/shared/fonts.css" />
   <link rel="stylesheet" href="../assets/shared/tailwind.css" />
@@ -43,17 +43,17 @@
       </div>
     </section>
 
-    <section class="relative pb-[100px] pl-[5%] pr-[5%] pt-[200px] bg-no-repeat bg-cover bg-center flex flex-col items-center" style="background-image:url(/assets/cases/yarden/imagem-principal.webp)">
+    <section class="relative pb-[100px] pl-[5%] pr-[5%] pt-[200px] bg-no-repeat bg-cover bg-center flex flex-col items-center" style="background-image:url(/assets/cases/{{SLUG}}/{{HERO_IMAGE}})">
       <div class="flex flex-col max-w-[1280px] w-[100%] pl-[32px] pr-[32px] relative z-[10] items-start max-md:pl-[0px] max-md:pr-[0px]">
         <div class="flex flex-col w-[100%] gap-[24px] max-w-[680px]">
-          <p class="font-[STIX_Two_Text_Italic] text-[20px] text-[#ffffff]/60">Yarden</p>
-          <h1 class="text-[#ffffff] font-[400] tracking-[-0em] mt-[-16px] text-[36px] leading-[1.2] max-md:text-[24px]"></h1>
-          <div class="flex flex-col gap-[16px] text-[16px] text-[#ffffff] opacity-[60%]"></div>
+          <p class="font-[STIX_Two_Text_Italic] text-[20px] text-[#ffffff]/60">{{NAME}}</p>
+          <h1 class="text-[#ffffff] font-[400] tracking-[-0em] mt-[-16px] text-[36px] leading-[1.2] max-md:text-[24px]">{{HEADLINE}}</h1>
+          <div class="flex flex-col gap-[16px] text-[16px] text-[#ffffff] opacity-[60%]">{{INTRO_HTML}}</div>
           <hr class="border-t-[1px] border-[#ffffff]/10" />
           <div class="flex gap-[36px] max-md:flex max-md:flex-col">
-            
-            
-            
+            {{META_SEGMENT}}
+            {{META_DURATION}}
+            {{META_SERVICES}}
           </div>
         </div>
       </div>
@@ -66,19 +66,19 @@
           <div class="flex items-start flex-col gap-[24px] w-[100%]">
             <div class="flex flex-col gap-[12px]">
               <h2 class="leading-[1.1] tracking-[-0.01em] font-[STIX_Two_Text_Italic] font-[400] text-[24px] text-[#171717]">Desafio</h2>
-              <div class="flex flex-col gap-[16px] text-[16px]"></div>
+              <div class="flex flex-col gap-[16px] text-[16px]">{{CHALLENGE_HTML}}</div>
             </div>
           </div>
           <div class="flex items-start flex-col gap-[24px]">
             <div class="flex flex-col gap-[12px]">
               <h2 class="leading-[1.1] tracking-[-0.01em] font-[STIX_Two_Text_Italic] font-[400] text-[24px] text-[#171717]">Decisão Estratégica</h2>
-              <div class="flex flex-col gap-[16px] text-[16px]"></div>
+              <div class="flex flex-col gap-[16px] text-[16px]">{{STRATEGIC_DECISION_HTML}}</div>
             </div>
           </div>
         </div>
       </div>
 
-      
+      {{VISUAL_STRATEGY_SECTION}}
 
       <hr class="border-t-[1px] border-[#000000]/20 bg-[#000000]/10 opacity-[50%]" />
       <div class="mr-auto ml-auto w-full flex flex-col w-[100%] max-w-[1280px] mr-[auto] ml-[auto] pr-[32px] pl-[32px] max-md:pl-[0px] max-md:pr-[0px]">
@@ -86,43 +86,21 @@
           <div class="flex items-start flex-col gap-[24px] w-[60%] max-md:w-[100%]">
             <div class="flex flex-col gap-[16px]">
               <h2 class="leading-[1.1] tracking-[-0.01em] font-[STIX_Two_Text_Italic] font-[400] text-[24px] text-[#171717]">Processo Aplicado</h2>
-              <div class="flex flex-col gap-[16px] text-[16px] max-md:text-[14px]"></div>
+              <div class="flex flex-col gap-[16px] text-[16px] max-md:text-[14px]">{{APPLIED_STRATEGY_HTML}}</div>
             </div>
           </div>
         </div>
       </div>
 
-      
+      {{MOCKUPS_SECTION}}
 
-      
+      {{MAIN_FILM_SECTION}}
     </section>
 
-    
+    {{MOCKUPS_GALLERY_SECTION}}
 
     <section class="h-auto flex flex-col overflow-hidden pl-[5%] pr-[5%] pt-[90px] gap-[90px] pb-[90px]">
-            <hr class="border-t-[1px] border-[#000000]/20 bg-[#000000]/10 opacity-[50%]" />
-      <div class="mr-auto ml-auto w-full flex flex-col w-[100%] max-w-[1280px] mr-[auto] ml-[auto] pr-[32px] pl-[32px] max-md:pl-[0px] max-md:pt-[0px] max-md:pr-[0px] max-md:pb-[0px]">
-        <div class="flex flex-col gap-[24px]">
-          <h2 class="leading-[1.1] tracking-[-0.01em] font-[STIX_Two_Text_Italic] font-[400] text-[24px] text-[#171717]">Audiovisual</h2>
-          <div class="flex flex-row gap-[48px] max-md:flex max-md:flex-col">
-            <div class="flex flex-col gap-[12px] w-[100%] items-center">
-              <div class="flex flex-col rounded-[4px] overflow-hidden border-solid border-[1.5px] border-[#000000]/10">
-                <video class="w-full aspect-[16/9] overflow-hidden object-cover h-[600px]" preload="metadata" controls src="../assets/cases/yarden/conteúdo-vertical-1.mp4"></video>
-              </div>
-            </div>
-            <div class="flex flex-col gap-[12px] w-[100%] items-center">
-              <div class="flex flex-col rounded-[4px] overflow-hidden border-solid border-[1.5px] border-[#000000]/10">
-                <video class="w-full aspect-[16/9] overflow-hidden object-cover h-[600px]" preload="metadata" controls src="../assets/cases/yarden/conteúdo-vertical-2.mp4"></video>
-              </div>
-            </div>
-            <div class="flex flex-col gap-[12px] w-[100%] items-center">
-              <div class="flex flex-col rounded-[4px] overflow-hidden border-solid border-[1.5px] border-[#000000]/10">
-                <video class="w-full aspect-[16/9] overflow-hidden object-cover h-[600px]" preload="metadata" controls src="../assets/cases/yarden/conteúdo-vertical-3.mp4"></video>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      {{AUDIOVISUAL_SECTION}}
       <hr class="border-t-[1px] border-[#000000]/20 bg-[#000000]/10 opacity-[50%]" />
       <div class="mr-auto ml-auto w-full flex flex-col w-[100%] max-w-[1280px] mr-[auto] ml-[auto] pr-[32px] pl-[32px] max-md:pl-[0px] max-md:pr-[0px]">
         <div class="grid max-md:grid-cols-1 max-lg:grid-cols-2 mt-[0px] grid-cols-[repeat(2,_1fr)] items-start gap-[90px]">
@@ -130,9 +108,9 @@
             <div class="flex flex-col gap-[16px]">
               <h2 class="leading-[1.1] tracking-[-0.01em] font-[STIX_Two_Text_Italic] font-[400] text-[24px] text-[#171717]">Resultados</h2>
             </div>
-            <div class="flex flex-col gap-[16px] text-[16px] results-rich-text w-[100%]"></div>
+            <div class="flex flex-col gap-[16px] text-[16px] results-rich-text w-[100%]">{{RESULTS_HTML}}</div>
           </div>
-          
+          {{TESTIMONIAL_SECTION}}
         </div>
       </div>
       <hr class="border-t-[1px] border-[#000000]/20 bg-[#000000]/10 opacity-[50%]" />
@@ -145,9 +123,7 @@
               <a class="flex flex-row items-center justify-center text-[#FFFFFF] pt-[8px] pb-[8px] text-[14px] bg-[#171717] text-center pl-[24px] pr-[24px] rounded-[999px] no-underline" href="../contato.html">
                 <span>Fale conosco</span>
               </a>
-                            <a class="flex flex-row items-center justify-center pt-[8px] pb-[8px] text-[14px] bg-[#e5e5e5] text-[#171717] pl-[24px] pr-[24px] rounded-[999px] no-underline" href="trifold.html">
-                <span>Próximo case</span>
-              </a>
+              {{NEXT_CASE_LINK}}
             </div>
           </div>
         </div>

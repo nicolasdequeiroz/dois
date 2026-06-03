@@ -1,0 +1,60 @@
+{
+  "name": "Trifold",
+  "slug": "trifold",
+  "cardText": "Reposicionamento estratégico para uma construtora com história, mas que precisava alinhar a percepção da marca à sua grande capacidade de entrega.",
+  "segment": "Alto Padrão",
+  "duration": "",
+  "services": ["Branding", "Marketing"],
+  "headline": "Como ganhar espaço e concorrer com grandes incorporadoras mesmo com poucos anos de história própria?",
+  "intro": [
+    "A Trifold possuía experiência, histórico de obras relevantes e know-how técnico consolidado. O problema não estava na entrega, mas na percepção.",
+    "A marca não comunicava com clareza seu nível de atuação, seu repertório técnico nem o novo momento da empresa como incorporadora. Isso gerava desalinhamento entre valor real e valor percebido."
+  ],
+  "challenge": [
+    "Além do reposicionamento da marca, e olhando para o mercado da incorporação a empresa precisava corrigir decisões estratégicas anteriores, incluindo o lançamento de um produto desalinhado a estratégia correta, o que afetou as vendas."
+  ],
+  "strategicDecision": [
+    "Antes de insistir em vendas ou novos produtos, a decisão foi revisar os fundamentos. Reposicionar a marca, ancorar a credibilidade da empresa a grande experiência do Diretor e redefinir critérios estratégicos e em seguida reposicionar o produto lançado."
+  ],
+  "appliedStrategy": [
+    "Foi realizado um reposicionamento completo da estratégia verbal e visual da marca. A Trifold passou a adotar um posicionamento mais disruptivo, capaz de desafiar o mercado com uma proposta tecnológica no seu método construtivo, sem abrir mão de comunicar a força, a robustez e a credibilidade da engenharia.",
+    "A partir disso, foi construída uma arquitetura verbal e visual coerente, que traduz esse posicionamento de forma clara e consistente em todos os pontos de contato. Além de uma estratégia de marketing que permite gerar visibilidade a esse novo momento — que por fim gera demanda qualificada."
+  ],
+  "assets": {
+    "heroImage": "imagem-principal.webp",
+    "logoBefore": "logo-antiga.webp",
+    "logoAfter": "logo-atual.webp",
+    "mainFilm": null,
+    "clientPhoto": "foto-do-cliente.webp",
+    "logoCard": "logo-atual.webp"
+  },
+  "mockups": [],
+  "verticalVideos": [
+    "conteúdo-vertical-1.mp4",
+    "conteúdo-vertical-2.mp4",
+    "conteúdo-vertical-3.mp4"
+  ],
+  "testimonial": {
+    "quote": "A marca passou a comunicar com precisão seu valor e direção. O reposicionamento criou base sólida para decisões mais assertivas, maior autoridade no mercado e tração comercial.",
+    "name": "Alexandre Nicolau",
+    "role": "CEO & Founder da Trifold"
+  },
+  "results": [
+    {
+      "value": "87%",
+      "label": "Aumento na percepção de valor (pesquisa pós-lançamento)"
+    },
+    {
+      "value": "+7K",
+      "label": "Seguidores no Instagram pós investidas de marketing"
+    },
+    {
+      "value": "3x",
+      "label": "Taxa de conversão nas visitas ao decorado"
+    }
+  ],
+  "seo": {
+    "title": "Case Trifold — Dois Intelligence",
+    "description": "Case Trifold: reposicionamento de marca e marketing para construtora de alto padrão pela Dois Intelligence."
+  }
+}

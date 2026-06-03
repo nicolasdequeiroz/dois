@@ -1,0 +1,214 @@
+/* 1. Botão Principal */
+  #bttn {
+    position: relative !important;
+    overflow: hidden !important; 
+    isolation: isolate !important; /* Impede o vazamento do brilho */
+    display: inline-flex !important; 
+    align-items: center !important;
+    justify-content: center !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+    cursor: pointer;
+  }
+
+  #bttn:hover {
+    transform: translateY(-3px) scale(1.02) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  /* 2. O Efeito de Glare (Brilho) */
+  #bttn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0; 
+    width: 150%; 
+    height: 100%;
+    background: linear-gradient(
+      120deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.4) 50%, 
+      rgba(255, 255, 255, 0) 100%
+    );
+    transform: translateX(-150%) skewX(-25deg); 
+    z-index: -1; 
+    pointer-events: none; 
+    transition: transform 0.6s ease-in-out !important; 
+  }
+
+  #bttn:hover::before {
+    transform: translateX(100%) skewX(-25deg) !important; 
+  }
+
+  /* 3. Div da Seta */
+  #arrow-block {
+    display: inline-flex !important; 
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 0 !important; 
+    transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+    position: relative;
+  }
+
+  #arrow-block svg, 
+  #arrow-block img {
+    display: block !important;
+  }
+
+  /* 4. Animação de Rotação da Seta no Hover */
+  #bttn:hover #arrow-block {
+    transform: rotate(-45deg) !important;
+  }
+
+/* =========================================
+     1. AS ANIMAÇÕES (KEYFRAMES)
+     ========================================= */
+     
+  /* Animação A: Sobe e desce suavemente (20px) */
+  @keyframes float-organic {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+  }
+
+  /* Animação B: Sobe e desce (15px) com uma leve inclinação de 2 graus */
+  @keyframes float-rotate {
+    0%, 100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+    50% {
+      transform: translateY(-15px) rotate(2deg);
+    }
+  }
+
+  /* =========================================
+     2. APLICANDO NAS CLASSES
+     ========================================= */
+
+  /* Prepara as imagens para ter uma animação lisa, forçando o uso da placa de vídeo */
+  .concrete-img {
+    will-change: transform !important; 
+  }
+
+  /* Imagem 1: Flutuação padrão, ciclo de 6 segundos */
+  .concrete-img.is-1 {
+    animation: float-organic 6s ease-in-out infinite !important;
+  }
+
+  /* Imagem 2: Usa a animação com rotação, mais lenta (8s). 
+     O delay de -3s faz com que ela já comece do meio, quebrando a sincronia com a is-1 */
+  .concrete-img.is-2 {
+    animation: float-rotate 8s ease-in-out infinite !important;
+    animation-delay: -3s !important; 
+  }
+
+  /* Imagem 3: Volta para a flutuação padrão, ciclo de 7 segundos.
+     Delay de -5s garante que o ritmo dela seja totalmente diferente das outras duas */
+  .concrete-img.is-3 {
+    animation: float-organic 7s ease-in-out infinite !important;
+    animation-delay: -5s !important;
+  }
+
+/* 1. Pega o Wrapper da sua coleção pelo ID ou Classe */
+  #sua-colecao-wrapper {
+    /* Ativa o snap horizontal obrigatório */
+    scroll-snap-type: x mandatory;
+    /* Esconde a barra de rolagem no Firefox e IE */
+    scrollbar-width: none; 
+    -ms-overflow-style: none;
+    /* Suaviza o scroll no mousewheel/trackpad */
+    scroll-behavior: smooth;
+  }
+
+  /* Esconde a barra de rolagem no Chrome/Safari/Edge */
+  #sua-colecao-wrapper::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* 2. Pega os Itens da coleção */
+  .seu-collection-item {
+    /* Faz o item "travar" no centro (ou 'start') da tela */
+    scroll-snap-align: center; 
+  }
+
+/* Transforma o contêiner em uma trilha de rolagem horizontal */
+#slider {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  overflow-x: auto;
+  overflow-y: hidden;
+  gap: 32px; /* Espaçamento entre os cards - ajuste conforme seu design */
+  padding-bottom: 24px; /* Dá respiro para as sombras dos cards não cortarem */
+  
+  /* Comportamento magnético do slider */
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  
+  /* Esconde a barra de rolagem para um visual mais limpo */
+  -ms-overflow-style: none;  /* IE e Edge */
+  scrollbar-width: none;  /* Firefox */
+  cursor: grab; /* Indica que pode ser arrastado */
+}
+
+#slider::-webkit-scrollbar {
+  display: none; /* Esconde no Chrome, Safari e Opera */
+}
+
+#slider:active {
+  cursor: grabbing; /* Muda o cursor quando o usuário clica para arrastar */
+}
+
+/* Configuração individual dos cards */
+.slider-item {
+  flex: 0 0 auto !important; /* Impede que os itens encolham */
+  width: 320px; /* Largura padrão do card no desktop */
+  scroll-snap-align: start; /* O magnetismo "trava" no início de cada card */
+}
+
+/* Ajuste responsivo para mobile */
+@media (max-width: 768px) {
+  .slider-item {
+    width: 85vw; /* No celular, o card ocupa quase a tela toda, deixando uma pontinha do próximo visível */
+  }
+}
+
+/* Posicionamento dos controles */
+.slider-controls {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end; /* Alinha as setas à direita */
+  margin-top: 24px;
+  padding-right: 16px; /* Ajuste conforme a margem do seu layout */
+}
+
+/* Estilo premium das setas */
+.slider-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #0A0A0A; /* Tom escuro para contrastar */
+  color: #FFFFFF;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.slider-arrow svg {
+  width: 20px;
+  height: 20px;
+}
+
+.slider-arrow:hover {
+  background-color: #333333;
+  transform: scale(1.05);
+}
+
+.slider-arrow:active {
+  transform: scale(0.95);
+}

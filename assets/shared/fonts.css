@@ -1,0 +1,39 @@
+@font-face {
+  font-family: 'STIX Two Text';
+  src: url('/fonts/stix-two-text.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'STIX Two Text Italic';
+  src: url('/fonts/stix-two-text-italic.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'DM Sans 9pt Regular';
+  src: url('/fonts/dm-sans-9pt-regular.ttf') format('truetype');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  font-weight: 400;
+  src: url('/fonts/inter-400.woff2') format('woff2');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  font-weight: 500;
+  src: url('/fonts/inter-500.woff2') format('woff2');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  font-weight: 600;
+  src: url('/fonts/inter-600.woff2') format('woff2');
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  font-weight: 700;
+  src: url('/fonts/inter-700.woff2') format('woff2');
+  font-display: swap;
+}
