@@ -49,8 +49,16 @@ Isso gera `cases/{slug}.html` (páginas irmãs) e atualiza os grids em `cases.ht
 
 ## Aplicar correções no HTML
 
+Remove artefatos do export YCode (classes inválidas, SVG de seta corrompido, IDs duplicados, links quebrados, SEO, WhatsApp, etc.):
+
 ```bash
 python3 fix_site.py
+```
+
+Fluxo recomendado após editar cases ou re-exportar:
+
+```bash
+python3 build_cases.py && python3 fix_site.py
 ```
 
 ## GitHub Pages

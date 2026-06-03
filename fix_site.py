@@ -141,12 +141,15 @@ def fix_nav_and_footer(content: str, rel: str) -> str:
         content,
     )
 
+    content = normalize_nav_cta(content)
+
+    content = remove_footer_blog_link(content)
+
     # Footer links: p with href -> a
     for page in [
         "index.html",
         "cases.html",
         "metodologia.html",
-        "blog.html",
         "contato.html",
     ]:
         content = content.replace(
@@ -331,20 +334,192 @@ def fix_root_relative_background_urls(content: str) -> str:
     return content
 
 
-def close_whatsapp_anchor(content: str) -> str:
-    if 'aria-label="WhatsApp"' not in content:
-        return content
-    # Replace closing </div> after zap icon for whatsapp floater
-    idx = content.find('aria-label="WhatsApp"')
-    if idx == -1:
-        return content
-    zap = content.find("assets/shared/zap.svg", idx)
-    if zap == -1:
-        return content
-    end = content.find("</div>", zap)
-    if end != -1:
-        content = content[:end] + "</a>" + content[end + len("</div>") :]
+def normalize_nav_cta(content: str) -> str:
+    pattern = re.compile(
+        r'<a class="font-\[DM_Sans_9pt_Regular\][^"]*max-md:order-2[^"]*" '
+        r'href="([^"]*contato\.html)"><span>Contato</span></a>',
+        re.IGNORECASE,
+    )
+
+    def repl(match: re.Match) -> str:
+        return (
+            f'<a class="nav-cta font-dm-sans-9pt-regular font-bold uppercase '
+            f'tracking-[0.025em] text-[12px] max-md:order-2 no-underline" '
+            f'href="{match.group(1)}"><span>Contato</span></a>'
+        )
+
+    return pattern.sub(repl, content)
+
+
+def remove_footer_blog_link(content: str) -> str:
+    pattern = re.compile(
+        r'\s*<a class="focus:outline-none nav-link[^"]*" '
+        r'href="(?:\.\./)?blog\.html">Blog</a>',
+        re.IGNORECASE,
+    )
+    return pattern.sub("", content)
+
+
+WHATSAPP_URL = "https://wa.me/554488447212"
+
+WHATSAPP_ICON_SVG = (
+    '<svg width="21" height="21" viewBox="0 0 21 21" fill="none" '
+    'xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'
+    '<path d="M17.8125 3.09375C19.7812 5.0625 21 7.64062 21 10.4531C21 16.1719 16.2188 20.8594 10.4531 20.8594C8.71875 20.8594 7.03125 20.3906 5.48438 19.5938L0 21L1.45312 15.6094C0.5625 14.0625 0.046875 12.2812 0.046875 10.4062C0.046875 4.6875 4.73438 0 10.4531 0C13.2656 0 15.8906 1.125 17.8125 3.09375ZM10.4531 19.0781C15.2344 19.0781 19.2188 15.1875 19.2188 10.4531C19.2188 8.10938 18.2344 5.95312 16.5938 4.3125C14.9531 2.67188 12.7969 1.78125 10.5 1.78125C5.71875 1.78125 1.82812 5.67188 1.82812 10.4062C1.82812 12.0469 2.29688 13.6406 3.14062 15.0469L3.375 15.375L2.48438 18.5625L5.76562 17.6719L6.04688 17.8594C7.40625 18.6562 8.90625 19.0781 10.4531 19.0781ZM15.2344 12.6094C15.4688 12.75 15.6562 12.7969 15.7031 12.9375C15.7969 13.0312 15.7969 13.5469 15.5625 14.1562C15.3281 14.7656 14.2969 15.3281 13.8281 15.375C12.9844 15.5156 12.3281 15.4688 10.6875 14.7188C8.0625 13.5938 6.375 10.9688 6.23438 10.8281C6.09375 10.6406 5.20312 9.42188 5.20312 8.10938C5.20312 6.84375 5.85938 6.23438 6.09375 5.95312C6.32812 5.67188 6.60938 5.625 6.79688 5.625C6.9375 5.625 7.125 5.625 7.26562 5.625C7.45312 5.625 7.64062 5.57812 7.875 6.09375C8.0625 6.60938 8.625 7.875 8.67188 8.01562C8.71875 8.15625 8.76562 8.29688 8.67188 8.48438C8.20312 9.46875 7.64062 9.42188 7.92188 9.89062C8.95312 11.625 9.9375 12.2344 11.4844 12.9844C11.7188 13.125 11.8594 13.0781 12.0469 12.9375C12.1875 12.75 12.7031 12.1406 12.8438 11.9062C13.0312 11.625 13.2188 11.6719 13.4531 11.7656C13.6875 11.8594 14.9531 12.4688 15.2344 12.6094Z" fill="white"/>'
+    "</svg>"
+)
+
+
+def whatsapp_floater_markup(prefix: str = "") -> str:
+    return (
+        f'<a class="whatsapp-floater" href="{WHATSAPP_URL}" target="_blank" '
+        f'rel="noopener noreferrer" aria-label="Falar no WhatsApp">'
+        f"{WHATSAPP_ICON_SVG}"
+        f"</a>"
+    )
+
+
+HERO_BTTN_ARROW = (
+    '<span class="bttn-arrow-block rounded-full flex items-center justify-center w-[36px] h-[36px] '
+    'shrink-0 bg-[#ffffff]/10" aria-hidden="true">'
+    '<svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg" '
+    'aria-hidden="true"><path d="M9.34375 0C9.75 0 10.0938 0.34375 10.0938 0.75V8.25C10.0938 8.6875 '
+    "9.75 9 9.34375 9C8.90625 9 8.59375 8.6875 8.59375 8.25V2.5625L1.375 9.78125C1.0625 10.0938 "
+    "0.59375 10.0938 0.3125 9.78125C0 9.5 0 9.03125 0.3125 8.75L7.53125 1.53125H1.84375C1.40625 "
+    "1.53125 1.09375 1.1875 1.09375 0.78125C1.09375 0.34375 1.40625 0.03125 1.84375 0.03125H9.34375V0Z"
+    ' fill="white"/></svg></span>'
+)
+
+YCODE_GARBAGE_CLASSES = frozenset({"w-a", "w-u", "w-uto", "w-ut", "w-vw", "w-%"})
+CLASS_ATTR_RE = re.compile(r'class="([^"]*)"')
+
+DUPLICATE_SECTION_CLASS_RE = re.compile(
+    r'(class="h-auto flex flex-col overflow-hidden h-\[auto\] pl-\[5%\] pr-\[5%\] pt-\[140px\] pb-\[140px\])\s+\1'
+)
+
+
+def strip_ycode_garbage_classes(content: str) -> str:
+    def repl(match: re.Match) -> str:
+        classes = [c for c in match.group(1).split() if c not in YCODE_GARBAGE_CLASSES]
+        return f'class="{" ".join(classes)}"'
+
+    return CLASS_ATTR_RE.sub(repl, content)
+
+
+def cleanup_ycode_artifacts(content: str, rel: str) -> str:
+    """Remove common YCode export noise from HTML."""
+    content = content.replace("[&#x27;block&#x27;] ", "")
+    content = content.replace(" top-au", "")
+    content = strip_ycode_garbage_classes(content)
+    content = DUPLICATE_SECTION_CLASS_RE.sub(r"\1", content)
+    content = content.replace("no-nderline", "no-underline")
+    content = content.replace("no-u ", "no-underline ")
+    content = content.replace('no-u"', 'no-underline"')
+
+    content = content.replace(
+        "flex-wrap w-a flex flex-row gap-[10px]",
+        "inline-flex flex-row items-center gap-[10px]",
+    )
+    content = content.replace(
+        "flex-wrap flex flex-row gap-[10px]",
+        "inline-flex flex-row items-center gap-[10px]",
+    )
+    content = content.replace(
+        'h-auto max-w-full h-[auto] max-w-[100%]',
+        "h-auto max-w-full",
+    )
+    content = content.replace('alt="Image description"', 'alt="" aria-hidden="true"')
+
+    # Hero CTA: SVG inline (export corrompia o arquivo .svg em pixels)
+    content = re.sub(
+        r'<span class="bttn-arrow-block[^"]*">'
+        r"\s*<img[^>]*hero-text-bttn-arrow-block-image\.svg[^>]*/>\s*</span>",
+        HERO_BTTN_ARROW,
+        content,
+    )
+    content = re.sub(
+        r'<div class="rounded-full[^"]*" id="arrow-block">\s*'
+        r'<img[^>]*hero-text-bttn-arrow-block-image\.svg[^>]*/>\s*</div>',
+        HERO_BTTN_ARROW,
+        content,
+    )
+    content = re.sub(
+        r'<img[^>]*hero-text-bttn-arrow-block-image\.svg[^>]*/>',
+        HERO_BTTN_ARROW,
+        content,
+    )
+
+    content = dedupe_bttn_ids(content)
+    content = ensure_hero_bttn_id(content, rel)
     return content
+
+
+def ensure_hero_bttn_id(content: str, rel: str) -> str:
+    """Primeiro .site-bttn da home (hero) mantém id=\"bttn\" para scripts/estilos."""
+    if rel != "index.html":
+        return content
+    marker = 'id="hero-text"'
+    pos = content.find(marker)
+    if pos == -1:
+        return content
+    bttn = content.find('class="site-bttn', pos)
+    if bttn == -1:
+        return content
+    tag_start = content.rfind("<a ", pos, bttn + 5)
+    if tag_start == -1:
+        return content
+    close = content.find(">", tag_start)
+    if close == -1:
+        return content
+    tag_chunk = content[tag_start:close]
+    if 'id="bttn"' in tag_chunk:
+        return content
+    if 'href="contato.html"' not in tag_chunk:
+        return content
+    new_tag = tag_chunk.replace('class="site-bttn', 'id="bttn" class="site-bttn', 1)
+    return content[:tag_start] + new_tag + content[close:]
+
+
+def _ensure_class_on_tag(content: str, id_pos: int, class_name: str) -> str:
+    class_attr = content.rfind('class="', max(0, id_pos - 800), id_pos)
+    if class_attr == -1:
+        return content
+    snippet = content[class_attr : id_pos + 40]
+    if class_name in snippet:
+        return content
+    insert_at = class_attr + len('class="')
+    return content[:insert_at] + f"{class_name} " + content[insert_at:]
+
+
+def dedupe_bttn_ids(content: str) -> str:
+    """Keep one id=\"bttn\"; demais CTAs iguais usam .site-bttn."""
+    marker = 'id="bttn"'
+    first = content.find(marker)
+    if first == -1:
+        return content
+
+    content = _ensure_class_on_tag(content, first, "site-bttn")
+    offset = first + len(marker)
+    while True:
+        pos = content.find(marker, offset)
+        if pos == -1:
+            break
+        content = _ensure_class_on_tag(content, pos, "site-bttn")
+        content = content[:pos] + content[pos + len(marker) :]
+        offset = pos
+
+    return content
+
+
+def normalize_whatsapp_floater(content: str, rel: str) -> str:
+    if "wa.me/554488447212" not in content:
+        return content
+    prefix = "../" if rel.startswith("cases/") else ""
+    pattern = re.compile(
+        r'<a\s[^>]*href=["\']https://wa\.me/554488447212["\'][^>]*>.*?</a>',
+        re.DOTALL | re.IGNORECASE,
+    )
+    return pattern.sub(whatsapp_floater_markup(prefix), content, count=1)
 
 
 def process_file(rel: str) -> None:
@@ -362,8 +537,9 @@ def process_file(rel: str) -> None:
     text = fix_case_page_buttons(text, rel)
     text = inject_seo(text, rel)
     text = fix_blog_body(text, rel)
-    text = close_whatsapp_anchor(text)
+    text = normalize_whatsapp_floater(text, rel)
     text = fix_root_relative_background_urls(text)
+    text = cleanup_ycode_artifacts(text, rel)
     path.write_text(text, encoding="utf-8")
     print(f"fixed {rel}")
 

@@ -1,0 +1,34 @@
+#step-01,
+#step-02,
+#step-03 {
+  overflow: hidden;
+}
+
+.met-step-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image: linear-gradient(
+    180deg,
+    rgba(51, 51, 51, 0) 2.87%,
+    rgba(0, 0, 0, 0.8) 97.7%
+  );
+}
+
+.met-next-btn {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  opacity: 0.5;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.met-next-btn:hover {
+  opacity: 1;
+  transform: translateX(4px);
+}

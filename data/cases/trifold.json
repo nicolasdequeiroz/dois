@@ -28,10 +28,27 @@
     "clientPhoto": "foto-do-cliente.webp",
     "logoCard": "logo-atual.webp"
   },
-  "mockups": [],
+  "mockups": [
+    "mockup-01.webp",
+    "mockup-02.webp",
+    "mockup-03.webp",
+    "mockup-04.webp",
+    "mockup-05.webp",
+    "mockup-06.webp",
+    "mockup-07.webp",
+    "mockup-08.webp",
+    "mockup-09.webp",
+    "mockup-10.webp"
+  ],
   "verticalVideos": [
-    "conteúdo-vertical-1.mp4",
-    "conteúdo-vertical-2.mp4",
+    {
+      "src": "conteúdo-vertical-1.mp4",
+      "poster": "conteúdo-vertical-1-poster.webp"
+    },
+    {
+      "src": "conteúdo-vertical-2.mp4",
+      "poster": "conteúdo-vertical-2-poster.webp"
+    },
     "conteúdo-vertical-3.mp4"
   ],
   "testimonial": {

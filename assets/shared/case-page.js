@@ -79,4 +79,66 @@
   });
   baObserver.observe(document.documentElement, { childList: true, subtree: true });
   initBeforeAfterSliders();
+
+  function initStackingCards() {
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+
+    const cards = gsap.utils.toArray('.mockup-item');
+    if (cards.length <= 1) return;
+
+    const collectionWrapper = document.getElementById('mockup-collection');
+    if (collectionWrapper) {
+      collectionWrapper.style.display = 'block';
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const mm = gsap.matchMedia();
+    mm.add('(min-width: 1024px)', () => {
+      cards.forEach((card, index) => {
+        gsap.set(card, {
+          height: '100vh',
+          width: '100%',
+          position: 'relative',
+          overflow: 'hidden',
+          boxShadow: 'none',
+          filter: 'none',
+        });
+
+        if (index !== cards.length - 1) {
+          ScrollTrigger.create({
+            trigger: card,
+            start: 'top top',
+            pin: true,
+            pinSpacing: false,
+          });
+        }
+      });
+
+      const imgs = gsap.utils.toArray('.mockup-image');
+      gsap.set(imgs, {
+        width: '100%',
+        height: '100%',
+        objectFit: 'cover',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+      });
+
+      return () => {
+        gsap.set(cards, { clearProps: 'all' });
+        gsap.set(imgs, { clearProps: 'all' });
+      };
+    });
+  }
+
+  if (document.getElementById('mockup-collection')) {
+    initStackingCards();
+    window.addEventListener('load', () => {
+      if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+    });
+    setTimeout(() => {
+      if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+    }, 500);
+  }
 })();

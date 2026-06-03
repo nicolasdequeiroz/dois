@@ -1,3 +1,32 @@
+/* Corpo editorial (Desafio, Decisão, Processo…) */
+.case-body-copy p {
+  color: #171717;
+  opacity: 0.6;
+}
+
+/* Scroll pinning dos mockups (GSAP ScrollTrigger) */
+html, body {
+  height: auto !important;
+  overscroll-behavior: none;
+}
+
+#mockup-collection .mockup-item {
+  position: relative;
+  overflow: hidden;
+}
+
+@media (max-width: 1023px) {
+  #mockup-collection .mockup-item {
+    height: auto;
+  }
+
+  #mockup-collection .mockup-image {
+    position: relative;
+    height: auto;
+    width: 100%;
+  }
+}
+
 /* ==========================================
      DIAGRAMAÇÃO DO GRID DE ESTATÍSTICAS
      ========================================== */
@@ -108,3 +137,203 @@
   .ba-container:hover .ba-slider::after {
     transform: scale(1.1);
   }
+
+/* CTAs finais do case (alinhados ao #bttn / formulários do site) */
+.case-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 32px;
+}
+
+.case-cta {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 42px;
+  padding: 8px 8px 8px 24px;
+  border-radius: 9999px;
+  font-family: "DM Sans 9pt Regular", ui-sans-serif, system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease,
+    background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.case-cta::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 150%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.35) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: translateX(-150%) skewX(-25deg);
+  z-index: 0;
+  pointer-events: none;
+  transition: transform 0.6s ease-in-out;
+}
+
+.case-cta > span:first-child {
+  position: relative;
+  z-index: 1;
+}
+
+.case-cta-arrow {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 9999px;
+  line-height: 0;
+  transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.case-cta-arrow svg {
+  display: block;
+}
+
+.case-cta-primary {
+  color: #ffffff;
+  background-color: #171717;
+  border: 1px solid transparent;
+}
+
+.case-cta-primary .case-cta-arrow {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+.case-cta-secondary {
+  color: #171717;
+  background-color: transparent;
+  border: 1px solid color-mix(in oklab, #171717 18%, transparent);
+  padding-left: 20px;
+}
+
+.case-cta-secondary .case-cta-arrow {
+  background-color: color-mix(in oklab, #171717 6%, transparent);
+}
+
+.case-cta:hover,
+.case-cta:focus-visible {
+  transform: translateY(-3px) scale(1.02);
+  outline: none;
+}
+
+.case-cta-primary:hover,
+.case-cta-primary:focus-visible {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+}
+
+.case-cta-secondary:hover,
+.case-cta-secondary:focus-visible {
+  border-color: color-mix(in oklab, #171717 35%, transparent);
+  background-color: color-mix(in oklab, #171717 4%, transparent);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.case-cta:hover::before,
+.case-cta:focus-visible::before {
+  transform: translateX(100%) skewX(-25deg);
+}
+
+.case-cta:hover .case-cta-arrow,
+.case-cta:focus-visible .case-cta-arrow {
+  transform: rotate(-45deg);
+}
+
+/* Variante compacta (CTA final do case) */
+.case-cta-row--small {
+  gap: 8px;
+}
+
+.case-cta--small,
+.case-cta-row--small .case-cta {
+  min-height: 34px;
+  padding: 4px 20px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.case-cta--small:hover,
+.case-cta--small:focus-visible,
+.case-cta-row--small .case-cta:hover,
+.case-cta-row--small .case-cta:focus-visible {
+  transform: translateY(-2px) scale(1.01);
+}
+
+.case-cta--small.case-cta-primary:hover,
+.case-cta--small.case-cta-primary:focus-visible,
+.case-cta-row--small .case-cta-primary:hover,
+.case-cta-row--small .case-cta-primary:focus-visible {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.14);
+}
+
+.case-cta--small.case-cta-secondary:hover,
+.case-cta--small.case-cta-secondary:focus-visible,
+.case-cta-row--small .case-cta-secondary:hover,
+.case-cta-row--small .case-cta-secondary:focus-visible {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+@media (max-width: 48rem) {
+  .case-cta-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .case-cta {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .case-cta-row--small {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .case-cta-row--small .case-cta {
+    width: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .case-cta,
+  .case-cta::before,
+  .case-cta-arrow {
+    transition: none;
+  }
+
+  .case-cta:hover,
+  .case-cta:focus-visible {
+    transform: none;
+  }
+
+  .case-cta:hover .case-cta-arrow,
+  .case-cta:focus-visible .case-cta-arrow {
+    transform: none;
+  }
+}

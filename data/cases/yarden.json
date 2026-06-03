@@ -1,15 +1,24 @@
 {
   "name": "Yarden",
   "slug": "yarden",
-  "cardText": "",
-  "segment": "",
+  "cardText": "Lançamento em mercado competitivo que vendeu mais de 70% das unidades em 3 dias com marca, posicionamento e marketing construídos do zero.",
+  "segment": "Médio Alto Padrão",
   "duration": "",
-  "services": [],
-  "headline": "",
-  "intro": [],
-  "challenge": [],
-  "strategicDecision": [],
-  "appliedStrategy": [],
+  "services": ["Branding", "Marketing", "Audiovisual"],
+  "headline": "Como vender mais de 70% das unidades em 3 dias, em um mercado extremamente competitivo.",
+  "intro": [
+    "O Yarden surgia como um novo empreendimento em um mercado altamente competitivo, em Maringá, PR, onde lançamentos disputam atenção, preço e narrativa. O desafio não era o produto em si, mas como gerar desejo, diferenciação e confiança desde o primeiro contato."
+  ],
+  "challenge": [
+    "Lançar um empreendimento por uma construtora que ainda não havia entregado nenhum projeto exigia construir posicionamento, marca e estratégia de comunicação capazes de gerar confiança e performar rapidamente, mesmo competindo com empresas consolidadas e de forte presença no mercado local."
+  ],
+  "strategicDecision": [
+    "A decisão foi construir o Yarden como uma marca antes de ser apenas um empreendimento. Definir com clareza seu posicionamento, público e proposta de valor, criando uma base estratégica sólida para sustentar a comunicação e a venda do lançamento."
+  ],
+  "appliedStrategy": [
+    "A partir da análise do mercado, da proposta do produto e do público-alvo desejado, construímos um posicionamento único, sustentado por uma estratégia verbal, visual e de marketing alinhada ao perfil do empreendimento.",
+    "Mais do que gerar desejo, a marca foi estruturada para provocar o sentimento de pertencimento a um novo jeito de viver, um refúgio urbano que contrapõe o ritmo acelerado atual com sofisticação, bem-estar e uma proposta clara de slow living, traduzida de forma consistente em toda a comunicação do lançamento."
+  ],
   "assets": {
     "heroImage": "imagem-principal.webp",
     "logoBefore": null,
@@ -20,7 +29,10 @@
   },
   "mockups": [],
   "verticalVideos": [
-    "conteúdo-vertical-1.mp4",
+    {
+      "src": "conteúdo-vertical-1.mp4",
+      "poster": "conteúdo-vertical-1-poster.webp"
+    },
     "conteúdo-vertical-2.mp4",
     "conteúdo-vertical-3.mp4"
   ],
@@ -29,9 +41,22 @@
     "name": "",
     "role": ""
   },
-  "results": [],
+  "results": [
+    {
+      "value": "+70%",
+      "label": "Dos imóveis vendidos em 3 dias"
+    },
+    {
+      "value": "-50%",
+      "label": "Redução no ciclo médio de venda"
+    },
+    {
+      "value": "+12K",
+      "label": "Leads qualificados no pré-lançamento"
+    }
+  ],
   "seo": {
     "title": "Case Yarden — Dois Intelligence",
-    "description": "Case de branding imobiliário Yarden pela Dois Intelligence."
+    "description": "Case Yarden: branding, marketing e audiovisual para lançamento imobiliário em Maringá. Mais de 70% das unidades vendidas em 3 dias."
   }
 }

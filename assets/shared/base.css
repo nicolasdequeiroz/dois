@@ -3,6 +3,298 @@
     height: auto !important;
     overscroll-behavior: none; 
   }
+
+  :root {
+    --9187beaa-0cd5-40b8-8d66-8527181f7d22: #333333;
+    --f53a5a83-1585-4ee8-9cad-d1da78881835: #ffffff;
+  }
+
+  /* Botão Contato na navbar (efeito padrão do site) */
+  .nav-cta {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 100px;
+    padding: 8px 24px;
+    border-radius: 9999px;
+    border: 1px solid transparent;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #ffffff !important;
+    text-decoration: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+  }
+
+  .nav-cta::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 150%;
+    height: 100%;
+    background: linear-gradient(
+      120deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.4) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    transform: translateX(-150%) skewX(-25deg);
+    z-index: 0;
+    pointer-events: none;
+    transition: transform 0.6s ease-in-out;
+  }
+
+  .nav-cta span {
+    position: relative;
+    z-index: 1;
+  }
+
+  .nav-cta:hover,
+  .nav-cta:focus-visible {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    outline: none;
+    color: #ffffff !important;
+  }
+
+  .nav-cta:hover::before,
+  .nav-cta:focus-visible::before {
+    transform: translateX(100%) skewX(-25deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav-cta,
+    .nav-cta::before {
+      transition: none;
+    }
+
+    .nav-cta:hover,
+    .nav-cta:focus-visible {
+      transform: none;
+    }
+  }
+
+  .case-card-scrim {
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.45) 45%, rgba(0, 0, 0, 0.2) 100%);
+    pointer-events: none;
+    z-index: 1;
+    transition: background 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .case-card-link {
+    display: block;
+    border-radius: 12px;
+    outline: none;
+  }
+
+  .case-card {
+    transition:
+      transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 0.4s ease;
+  }
+
+  .case-card-bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .case-card-arrow {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    transform: translate(8px, -8px) scale(0.85);
+    transition:
+      opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+      background 0.4s ease;
+  }
+
+  .case-card-arrow svg {
+    display: block;
+  }
+
+  .case-card-body h2,
+  .case-card-body p {
+    transition:
+      transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.45s ease,
+      max-width 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .case-card-body p {
+    max-width: 60%;
+  }
+
+  .case-card-link:hover .case-card,
+  .case-card-link:focus-visible .case-card {
+    transform: translateY(-6px) scale(1.015);
+    box-shadow: 0 28px 56px rgba(0, 0, 0, 0.24);
+    border-color: rgba(0, 0, 0, 0.2);
+  }
+
+  .case-card-link:hover .case-card-bg,
+  .case-card-link:focus-visible .case-card-bg {
+    transform: scale(1.06);
+  }
+
+  .case-card-link:hover .case-card-scrim,
+  .case-card-link:focus-visible .case-card-scrim {
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.92) 0%,
+      rgba(0, 0, 0, 0.55) 42%,
+      rgba(0, 0, 0, 0.28) 100%
+    );
+  }
+
+  .case-card-link:hover .case-card-arrow,
+  .case-card-link:focus-visible .case-card-arrow {
+    opacity: 1;
+    transform: translate(0, 0) scale(1) rotate(-6deg);
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .case-card-link:hover .case-card-body h2,
+  .case-card-link:focus-visible .case-card-body h2 {
+    transform: translateY(-2px);
+  }
+
+  .case-card-link:hover .case-card-body p,
+  .case-card-link:focus-visible .case-card-body p {
+    opacity: 1;
+    max-width: 72%;
+    transform: translateY(-2px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .case-card,
+    .case-card-bg,
+    .case-card-scrim,
+    .case-card-arrow,
+    .case-card-body h2,
+    .case-card-body p {
+      transition: none;
+    }
+
+    .case-card-link:hover .case-card,
+    .case-card-link:focus-visible .case-card {
+      transform: none;
+    }
+
+    .case-card-link:hover .case-card-bg,
+    .case-card-link:focus-visible .case-card-bg {
+      transform: none;
+    }
+  }
+
+  /* Botão flutuante WhatsApp (todas as páginas com base.css) */
+  .whatsapp-floater {
+    position: fixed;
+    z-index: 999;
+    right: max(20px, env(safe-area-inset-right, 0px));
+    bottom: max(24px, env(safe-area-inset-bottom, 0px));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 9999px;
+    background-color: #000000;
+    text-decoration: none;
+    isolation: isolate;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+    transition:
+      transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.35s ease;
+  }
+
+  .whatsapp-floater::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 150%;
+    height: 100%;
+    background: linear-gradient(
+      120deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.45) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    transform: translateX(-150%) skewX(-25deg);
+    z-index: 0;
+    pointer-events: none;
+    transition: transform 0.6s ease-in-out;
+  }
+
+  .whatsapp-floater svg {
+    position: relative;
+    z-index: 1;
+    width: 26px;
+    height: 26px;
+    display: block;
+    flex-shrink: 0;
+  }
+
+  .whatsapp-floater:hover,
+  .whatsapp-floater:focus-visible {
+    transform: translateY(-3px) scale(1.04);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+    outline: none;
+  }
+
+  .whatsapp-floater:hover::before,
+  .whatsapp-floater:focus-visible::before {
+    transform: translateX(100%) skewX(-25deg);
+  }
+
+  @media (min-width: 768px) {
+    .whatsapp-floater {
+      right: max(28px, env(safe-area-inset-right, 0px));
+      bottom: max(32px, env(safe-area-inset-bottom, 0px));
+      width: 72px;
+      height: 72px;
+    }
+
+    .whatsapp-floater svg {
+      width: 28px;
+      height: 28px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .whatsapp-floater,
+    .whatsapp-floater::before {
+      transition: none;
+    }
+
+    .whatsapp-floater:hover,
+    .whatsapp-floater:focus-visible {
+      transform: none;
+    }
+  }
   
   /* 2. Classes estruturais do Lenis */
   html.lenis, html.lenis body {

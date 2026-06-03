@@ -25,10 +25,14 @@ Edite os JSON aqui e rode `python3 build_cases.py` na raiz do projeto.
 - `challenge[]` — Desafio
 - `strategicDecision[]` — Decisão Estratégica
 - `appliedStrategy[]` — Processo / Estratégia aplicada
-- `assets.logoBefore`, `assets.logoAfter` — slider antes/depois
+- `assets.logoBefore`, `assets.logoAfter` — seção **Estratégia Visual** (condicional):
+  - **Rebrand** (`logoBefore` + `logoAfter`): slider interativo Antes/Depois
+  - **Branding do zero** (só `logoAfter`, sem `logoBefore`): bloco “Alternativa aprovada”
+  - Sem `logoAfter`: seção omitida
+  - Ex.: Trifold = rebrand; Yarden = do zero (defina só `logoAfter` quando houver arquivo)
 - `assets.mainFilm` — filme principal (opcional)
 - `mockups[]` — grid de mockups (nomes de arquivo)
-- `verticalVideos[]` — conteúdos verticais (audiovisual)
+- `verticalVideos[]` — conteúdos verticais (audiovisual). Aceita string (`"video.mp4"`) ou objeto `{ "src": "video.mp4", "poster": "capa.webp" }`. Use `"poster": "auto"` para gerar/detectar `{nome}-poster.webp`. No case **Trifold**, o 3º vídeo usa capa automática se `poster` for omitido.
 
 ### Resultados
 - `results[]` — `{ "value": "87%", "label": "..." }` (vira big numbers)
