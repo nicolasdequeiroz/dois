@@ -244,7 +244,7 @@ def build_nav_html(p: str) -> str:
         '<div class="flex flex-row justify-between items-center gap-[48px] max-lg:gap-[40px] '
         'max-md:gap-0 w-full h-[40px]">'
         f'<a class="flex items-center justify-center text-[#ffffff] no-underline shrink-0" id="logo" href="/">'
-        f'<img class="h-auto max-w-full w-[100px]" src="{p}assets/shared/navigation--logo.svg" alt="Dois Intelligence" />'
+        f'<img class="h-auto max-w-full w-[100px]" src="/assets/shared/navigation--logo.svg" alt="Dois Intelligence" />'
         '</a>'
         '<div class="nav-desktop-links shrink-0 flex items-center gap-[32px] grow justify-center">'
         '<a class="focus:outline-none nav-link uppercase no-underline opacity-[60%] hover:opacity-[100%] text-[#ffffff] font-[DM_Sans_9pt_Regular] font-[400] tracking-[0.1em] text-[12px]" href="/cases/">Cases</a>'
@@ -608,6 +608,15 @@ def fix_blog_body(content: str, rel: str) -> str:
     return content
 
 
+def fix_root_relative_asset_urls(content: str) -> str:
+    """Ensure src/href/poster asset paths resolve from site root on nested pages."""
+    return re.sub(
+        r'((?:src|href|poster)=["\'])(?:\.\./)*(assets/)',
+        r"\1/\2",
+        content,
+    )
+
+
 def fix_root_relative_background_urls(content: str) -> str:
     """Make asset URLs in backgrounds root-relative.
 
@@ -891,11 +900,20 @@ def rewrite_page_urls(content: str) -> str:
     return content
 
 
+def is_redirect_stub(path: Path) -> bool:
+    text = path.read_text(encoding="utf-8", errors="ignore")
+    return "location.replace" in text or 'http-equiv="refresh"' in text
+
+
 def migrate_clean_url_layout() -> None:
     for src, dst in PAGE_MIGRATIONS:
         src_path = ROOT / src
         dst_path = ROOT / dst
         if not src_path.exists():
+            continue
+        if is_redirect_stub(src_path):
+            if dst_path.exists():
+                src_path.unlink()
             continue
         dst_path.parent.mkdir(parents=True, exist_ok=True)
         if dst_path.exists():
@@ -960,6 +978,7 @@ def process_file(rel: str) -> None:
     text = inject_seo(text, rel)
     text = fix_blog_body(text, rel)
     text = normalize_whatsapp_floater(text, rel)
+    text = fix_root_relative_asset_urls(text)
     text = fix_root_relative_background_urls(text)
     text = rewrite_page_urls(text)
     text = cleanup_ycode_artifacts(text, rel)
