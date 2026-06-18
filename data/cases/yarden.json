@@ -22,12 +22,23 @@
   "assets": {
     "heroImage": "imagem-principal.webp",
     "logoBefore": null,
-    "logoAfter": null,
+    "logoAfter": "logo-atual.jpg",
     "mainFilm": null,
     "clientPhoto": null,
-    "logoCard": null
+    "logoCard": "logo-atual.jpg"
   },
-  "mockups": [],
+  "mockups": [
+    "mockup-01.jpg",
+    "mockup-02.jpg",
+    "mockup-03.jpg",
+    "mockup-04.jpg",
+    "mockup-05.jpg",
+    "mockup-06.jpg",
+    "mockup-07.jpg",
+    "mockup-08.jpg",
+    "mockup-09.jpg",
+    "mockup-10.jpg"
+  ],
   "verticalVideos": [
     {
       "src": "conteúdo-vertical-1.mp4",

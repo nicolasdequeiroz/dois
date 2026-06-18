@@ -116,13 +116,21 @@
       });
 
       const imgs = gsap.utils.toArray('.mockup-image');
-      gsap.set(imgs, {
-        width: '100%',
-        height: '100%',
-        objectFit: 'cover',
-        position: 'absolute',
-        top: 0,
-        left: 0,
+      imgs.forEach((img) => {
+        const applyFit = () => {
+          const needsContain = img.naturalWidth > 0 && img.naturalWidth < window.innerWidth * 0.9;
+          gsap.set(img, {
+            width: '100%',
+            height: '100%',
+            objectFit: needsContain ? 'contain' : 'cover',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+          });
+        };
+
+        if (img.complete) applyFit();
+        else img.addEventListener('load', applyFit, { once: true });
       });
 
       return () => {

@@ -13,6 +13,11 @@ html, body {
 #mockup-collection .mockup-item {
   position: relative;
   overflow: hidden;
+  background-color: #0a0a0a;
+}
+
+#mockup-collection .mockup-image {
+  image-rendering: auto;
 }
 
 @media (max-width: 1023px) {

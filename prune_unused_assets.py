@@ -37,7 +37,7 @@ REMOVE_PAGES = [
     ROOT / "500.html",
 ]
 
-KEEP_LIBRARY = {"dois-black-1.svg"}
+KEEP_LIBRARY = {"dois-black-1.svg", "favicon.png", "og-home.jpg"}
 
 
 def collect_html_asset_refs() -> set[str]:

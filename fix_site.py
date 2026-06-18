@@ -66,15 +66,49 @@ PAGE_META = {
     },
     "cases/trifold.html": {
         "title": "Case Trifold — Dois Intelligence",
-        "description": "Case de branding imobiliário Trifold pela Dois Intelligence.",
+        "description": "Case Trifold: reposicionamento de marca e marketing para construtora de alto padrão pela Dois Intelligence.",
         "path": "cases/trifold.html",
     },
     "cases/yarden.html": {
         "title": "Case Yarden — Dois Intelligence",
-        "description": "Case de branding imobiliário Yarden pela Dois Intelligence.",
+        "description": "Case Yarden: branding, marketing e audiovisual para lançamento imobiliário em Maringá. Mais de 70% das unidades vendidas em 3 dias.",
         "path": "cases/yarden.html",
     },
 }
+
+NOINDEX_PAGES = frozenset({"404.html", "obrigado.html", "blog.html"})
+
+SITEMAP_PATHS = [
+    "",
+    "cases.html",
+    "metodologia.html",
+    "contato.html",
+    "cases/trifold.html",
+    "cases/yarden.html",
+]
+
+DEFAULT_OG_IMAGE = "/assets/home/loading-overlay-intro-second-frame-hole-wrapper-hole-im.webp"
+
+HOME_OG_IMAGE = "/assets/library/og-home.jpg"
+
+FAVICON_PATH = "/assets/library/favicon.png"
+FAVICON_CASES_PATH = "../assets/library/favicon.png"
+
+CASE_OG_IMAGES = {
+    "cases/trifold.html": "/assets/cases/trifold/imagem-principal.webp",
+    "cases/yarden.html": "/assets/cases/yarden/imagem-principal.webp",
+}
+
+SEO_STRIP_RE = re.compile(
+    r'\s*<link rel="canonical"[^>]*/>\s*'
+    r'|\s*<link rel="icon"[^>]*/>\s*'
+    r'|\s*<link rel="apple-touch-icon"[^>]*/>\s*'
+    r'|\s*<meta name="robots"[^>]*/>\s*'
+    r'|\s*<meta property="og:[^"]*"[^>]*/>\s*'
+    r'|\s*<meta name="twitter:[^"]*"[^>]*/>\s*'
+    r'|\s*<script type="application/ld\+json">[\s\S]*?</script>\s*',
+    re.IGNORECASE,
+)
 
 SLIDER_CORRUPT_RE = re.compile(
     r' gap-&lt;script&gt;.*?&lt;/script&gt;( gap-&lt;script&gt;.*?&lt;/script&gt;)*',
@@ -419,8 +453,13 @@ def inject_seo(content: str, rel: str) -> str:
     meta = PAGE_META.get(rel)
     if not meta:
         return content
+
     canonical = f"{DOMAIN}/{meta['path']}" if meta["path"] else f"{DOMAIN}/"
-    og_image = f"{DOMAIN}/assets/library/dois-black-1.svg"
+    if rel == "index.html":
+        og_image = f"{DOMAIN}{HOME_OG_IMAGE}"
+    else:
+        og_image = f"{DOMAIN}{CASE_OG_IMAGES.get(rel, DEFAULT_OG_IMAGE)}"
+    favicon = FAVICON_CASES_PATH if rel.startswith("cases/") else FAVICON_PATH
 
     content = re.sub(r"<title>[^<]*</title>", f"<title>{meta['title']}</title>", content, count=1)
     content = re.sub(
@@ -429,48 +468,102 @@ def inject_seo(content: str, rel: str) -> str:
         content,
         count=1,
     )
+    content = SEO_STRIP_RE.sub("", content)
 
-    head_extra = f"""  <link rel="canonical" href="{canonical}" />
-  <link rel="icon" href="{DOMAIN}/assets/library/dois-black-1.svg" type="image/svg+xml" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="{canonical}" />
-  <meta property="og:title" content="{meta['title']}" />
-  <meta property="og:description" content="{meta['description']}" />
-  <meta property="og:image" content="{og_image}" />
-  <meta name="twitter:card" content="summary_large_image" />
-"""
-    if "rel=\"canonical\"" not in content:
-        content = content.replace("</head>", head_extra + "</head>", 1)
-    else:
+    seo_lines = []
+    if rel not in NOINDEX_PAGES:
+        seo_lines.append(f'  <link rel="canonical" href="{canonical}" />')
+    seo_lines.extend(
+        [
+            f'  <link rel="icon" href="{favicon}" type="image/png" sizes="32x32" />',
+            f'  <link rel="apple-touch-icon" href="{favicon}" />',
+            '  <meta name="robots" content="noindex, nofollow" />'
+            if rel in NOINDEX_PAGES
+            else '  <meta name="robots" content="index, follow" />',
+            '  <meta property="og:locale" content="pt_BR" />',
+            '  <meta property="og:site_name" content="Dois Intelligence" />',
+            '  <meta property="og:type" content="website" />',
+            f'  <meta property="og:url" content="{canonical}" />',
+            f'  <meta property="og:title" content="{meta["title"]}" />',
+            f'  <meta property="og:description" content="{meta["description"]}" />',
+            f'  <meta property="og:image" content="{og_image}" />',
+            '  <meta name="twitter:card" content="summary_large_image" />',
+            f'  <meta name="twitter:title" content="{meta["title"]}" />',
+            f'  <meta name="twitter:description" content="{meta["description"]}" />',
+            f'  <meta name="twitter:image" content="{og_image}" />',
+        ]
+    )
+
+    if rel == "index.html":
+        seo_lines.append(
+            """  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Dois Intelligence",
+  "url": "https://doisintelligence.com/",
+  "logo": "https://doisintelligence.com/assets/library/dois-black-1.svg",
+  "description": "Consultoria de branding e posicionamento para o mercado imobiliário."
+}
+</script>"""
+        )
+
+    seo_block = "\n".join(seo_lines) + "\n"
+    return content.replace(
+        f'<meta name="description" content="{meta["description"]}" />',
+        f'<meta name="description" content="{meta["description"]}" />\n{seo_block}',
+        1,
+    )
+
+
+def fix_index_intro_headings(content: str, rel: str) -> str:
+    """Intro animada não deve competir com o H1 principal da home."""
+    if rel != "index.html":
+        return content
+    for element_id in ("intro-first-text", "hello-left", "hello-right"):
         content = re.sub(
-            r'<link rel="canonical" href="[^"]*" />',
-            f'<link rel="canonical" href="{canonical}" />',
+            rf"<h1([^>]*id=\"{element_id}\"[^>]*)>(.*?)</h1>",
+            r"<p\1>\2</p>",
             content,
             count=1,
+            flags=re.DOTALL,
         )
-        content = re.sub(
-            r'<meta property="og:url" content="[^"]*" />',
-            f'<meta property="og:url" content="{canonical}" />',
-            content,
-            count=1,
-        )
-        if not rel.startswith("cases/"):
-            content = re.sub(
-                r'<meta property="og:image" content="[^"]*" />',
-                f'<meta property="og:image" content="{og_image}" />',
-                content,
-                count=1,
-            )
-
-    # Fix favicon path for case subpages
-    if rel.startswith("cases/"):
-        content = content.replace(
-            'href="/assets/library/dois-black-1.svg"',
-            'href="../assets/library/dois-black-1.svg"',
-        )
-        content = content.replace(f'content="{og_image}"', f'content="{DOMAIN}/assets/library/dois-black-1.svg"')
-
     return content
+
+
+def fix_case_cta_heading(content: str, rel: str) -> str:
+    if not rel.startswith("cases/"):
+        return content
+    return content.replace(
+        '<h1 class="tracking-[-0.02em] leading-[1.1] text-center max-md:text-[36px] font-[400] text-[48px]">Seja o nosso próximo case!</h1>',
+        '<h2 class="tracking-[-0.02em] leading-[1.1] text-center max-md:text-[36px] font-[400] text-[48px]">Seja o nosso próximo case!</h2>',
+    )
+
+
+def generate_sitemap() -> None:
+    urls = []
+    for path in SITEMAP_PATHS:
+        loc = f"{DOMAIN}/" if not path else f"{DOMAIN}/{path}"
+        urls.append(f"  <url>\n    <loc>{loc}</loc>\n  </url>")
+    xml = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        + "\n".join(urls)
+        + "\n</urlset>\n"
+    )
+    (ROOT / "sitemap.xml").write_text(xml, encoding="utf-8")
+    print("generated sitemap.xml")
+
+
+def generate_robots_txt() -> None:
+    content = (
+        "User-agent: *\n"
+        "Allow: /\n"
+        "\n"
+        f"Sitemap: {DOMAIN}/sitemap.xml\n"
+    )
+    (ROOT / "robots.txt").write_text(content, encoding="utf-8")
+    print("generated robots.txt")
 
 
 def fix_blog_body(content: str, rel: str) -> str:
@@ -742,6 +835,8 @@ def process_file(rel: str) -> None:
     text = fix_hero_cta(text, rel)
     text = fix_hero_featured_position(text, rel)
     text = fix_case_page_buttons(text, rel)
+    text = fix_index_intro_headings(text, rel)
+    text = fix_case_cta_heading(text, rel)
     text = inject_seo(text, rel)
     text = fix_blog_body(text, rel)
     text = normalize_whatsapp_floater(text, rel)
@@ -754,6 +849,8 @@ def process_file(rel: str) -> None:
 def main():
     for rel in HTML_FILES:
         process_file(rel)
+    generate_sitemap()
+    generate_robots_txt()
     print("done")
 
 

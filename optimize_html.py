@@ -301,7 +301,7 @@ def write_light_page(name: str, title: str, description: str, canonical_path: st
   <link rel="stylesheet" href="/assets/shared/fonts.css" />
   <link rel="stylesheet" href="/assets/shared/minimal.css" />
   <link rel="canonical" href="https://doisintelligence.com/{canonical_path}" />
-  <link rel="icon" href="/assets/library/dois-black-1.svg" type="image/svg+xml" />
+  <link rel="icon" href="/assets/library/favicon.png" type="image/png" sizes="32x32" />
 </head>
 <body>
   <header class="site-header">
