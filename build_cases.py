@@ -15,6 +15,7 @@ ROOT = Path(__file__).parent
 DATA_DIR = ROOT / "data" / "cases"
 TEMPLATE_PATH = ROOT / "cases" / "_template.html"
 DOMAIN = "https://doisintelligence.com"
+CASE_ASSET_PREFIX = "../../"
 
 GRID_START = "<!-- CASES_GRID_START -->"
 GRID_END = "<!-- CASES_GRID_END -->"
@@ -140,7 +141,7 @@ def resolve_video_poster(slug: str, src: str, poster_setting: str | None, video_
 def video_poster_attr(slug: str, poster: str | None) -> str:
     if not poster:
         return ""
-    return f' poster="../assets/cases/{slug}/{esc(poster)}"'
+    return f' poster="{CASE_ASSET_PREFIX}assets/cases/{slug}/{esc(poster)}"'
 
 
 def paragraphs_html(paragraphs: list[str]) -> str:
@@ -185,8 +186,8 @@ def meta_services(services: list[str]) -> str:
 def before_after_slider_block(slug: str, name: str, before: str, after: str) -> str:
     return f"""          <div class="flex flex-col items-stretch gap-[12px]">
             <div class="flex flex-col relative ba-container overflow-hidden w-[100%] aspect-[16/9] rounded-[4px] border-solid border-[#000000]/10 border-[1.5px]">
-              <img class="object-cover absolute inset-0 w-full h-full ba-before" loading="lazy" src="../assets/cases/{slug}/{esc(before)}" alt="Logo antes — {esc(name)}" />
-              <img class="object-cover absolute inset-0 w-full h-full ba-after" loading="lazy" src="../assets/cases/{slug}/{esc(after)}" alt="Logo depois — {esc(name)}" />
+              <img class="object-cover absolute inset-0 w-full h-full ba-before" loading="lazy" src="{CASE_ASSET_PREFIX}assets/cases/{slug}/{esc(before)}" alt="Logo antes — {esc(name)}" />
+              <img class="object-cover absolute inset-0 w-full h-full ba-after" loading="lazy" src="{CASE_ASSET_PREFIX}assets/cases/{slug}/{esc(after)}" alt="Logo depois — {esc(name)}" />
               <div class="flex flex-col ba-slider"></div>
             </div>
             <div class="flex flex-row items-center justify-between">
@@ -200,7 +201,7 @@ def approved_logo_block(slug: str, name: str, after: str) -> str:
     return f"""          <div class="grid-cols-[repeat(2,_1fr)] gap-[4px] flex flex-row">
             <div class="flex flex-col gap-[12px] w-[100%]">
               <div class="flex flex-col items-center border-solid border-[#171717]/10 rounded-[4px] border-[1.5px] overflow-hidden w-[100%] aspect-[16/9]">
-                <img class="w-[100%] object-cover h-full" loading="lazy" src="../assets/cases/{slug}/{esc(after)}" alt="Alternativa aprovada — {esc(name)}" />
+                <img class="w-[100%] object-cover h-full" loading="lazy" src="{CASE_ASSET_PREFIX}assets/cases/{slug}/{esc(after)}" alt="Alternativa aprovada — {esc(name)}" />
               </div>
               <p class="text-[#171717]/40 text-[12px] font-[600]">ALTERNATIVA APROVADA</p>
             </div>
@@ -248,7 +249,7 @@ def main_film_section(case: dict) -> str:
         <div class="flex flex-col gap-[24px]">
           <h2 class="leading-[1.1] tracking-[-0.01em] font-[STIX_Two_Text_Italic] font-[400] text-[24px] text-[#171717]">Materiais Produzidos</h2>
           <div class="flex flex-col gap-[12px] items-start w-[100%]">
-            <video class="w-full h-auto aspect-[16/9] overflow-hidden" preload="metadata" controls src="../assets/cases/{slug}/{esc(film)}"></video>
+            <video class="w-full h-auto aspect-[16/9] overflow-hidden" preload="metadata" controls src="{CASE_ASSET_PREFIX}assets/cases/{slug}/{esc(film)}"></video>
             <p class="text-[#171717]/40 text-[12px] font-[600]">FILME DE LANÇAMENTO</p>
           </div>
         </div>
@@ -278,7 +279,7 @@ def mockups_gallery_section(case: dict) -> str:
         alt = f"Mockup {index} — {name}"
         items.append(
             f"""          <div class="flex flex-col mockup-item">
-            <img class="mockup-image w-[100%] object-cover" loading="lazy" src="../assets/cases/{slug}/{esc(filename)}" alt="{esc(alt)}" />
+            <img class="mockup-image w-[100%] object-cover" loading="lazy" src="{CASE_ASSET_PREFIX}assets/cases/{slug}/{esc(filename)}" alt="{esc(alt)}" />
           </div>"""
         )
     inner = "\n".join(items)
@@ -304,7 +305,7 @@ def audiovisual_section(case: dict) -> str:
         blocks.append(
             f"""            <div class="flex flex-col gap-[12px] w-[100%] items-center">
               <div class="flex flex-col rounded-[12px] overflow-hidden border-solid border-[1.5px] border-[#000000]/10">
-                <video class="w-full aspect-[16/9] overflow-hidden object-cover h-[600px]" preload="metadata" controls src="../assets/cases/{slug}/{esc(filename)}"{poster}></video>
+                <video class="w-full aspect-[16/9] overflow-hidden object-cover h-[600px]" preload="metadata" controls src="{CASE_ASSET_PREFIX}assets/cases/{slug}/{esc(filename)}"{poster}></video>
               </div>
             </div>"""
         )
@@ -342,7 +343,7 @@ def testimonial_section(case: dict) -> str:
     slug = case["slug"]
     photo_html = ""
     if photo:
-        photo_html = f'<img class="object-cover w-[80px] h-[80px] rounded-[999px]" loading="lazy" src="../assets/cases/{slug}/{esc(photo)}" alt="{esc(name)}" />'
+        photo_html = f'<img class="object-cover w-[80px] h-[80px] rounded-[999px]" loading="lazy" src="{CASE_ASSET_PREFIX}assets/cases/{slug}/{esc(photo)}" alt="{esc(name)}" />'
     return f"""          <div class="flex flex-col">
             <div class="flex flex-col pl-[48px] pt-[48px] pr-[48px] pb-[48px] bg-[#000000]/5 rounded-[16px] gap-[24px] max-md:pl-[32px] max-md:pt-[32px] max-md:pr-[32px] max-md:pb-[32px]">
               <p class="font-[STIX_Two_Text_Italic] text-[24px] max-md:text-[18px]">{esc(quote)}</p>
@@ -361,7 +362,7 @@ CASE_ARROW_SVG = """<svg width="11" height="11" viewBox="0 0 11 11" fill="none" 
 
 
 def case_cta_next(slug: str, ordered_slugs: list[str], cases_by_slug: dict[str, dict]) -> str:
-    link = "../cases.html"
+    link = "/cases/"
     label = "Explorar cases"
     aria = "Ver todos os cases"
     if slug in ordered_slugs and len(ordered_slugs) > 1:
@@ -369,7 +370,7 @@ def case_cta_next(slug: str, ordered_slugs: list[str], cases_by_slug: dict[str, 
         if nxt != slug:
             nxt_case = cases_by_slug.get(nxt) or {}
             name = nxt_case.get("name") or nxt
-            link = f"{esc(nxt)}.html"
+            link = f"/cases/{esc(nxt)}/"
             label = f"Próximo: {name}"
             aria = f"Ver case {name}"
     return f"""              <a href="{link}" class="case-cta case-cta--small case-cta-secondary no-underline focus:outline-none" aria-label="{esc(aria)}">
@@ -378,7 +379,7 @@ def case_cta_next(slug: str, ordered_slugs: list[str], cases_by_slug: dict[str, 
 
 
 def case_cta_row(slug: str, ordered_slugs: list[str], cases_by_slug: dict[str, dict]) -> str:
-    primary = """              <a href="../contato.html" class="case-cta case-cta--small case-cta-primary no-underline focus:outline-none" aria-label="Fale conosco">
+    primary = """              <a href="/contato/" class="case-cta case-cta--small case-cta-primary no-underline focus:outline-none" aria-label="Fale conosco">
                 <span>fale conosco</span>
               </a>"""
     secondary = case_cta_next(slug, ordered_slugs, cases_by_slug)
@@ -419,6 +420,7 @@ def render_case(case: dict, ordered_slugs: list[str], cases_by_slug: dict[str, d
         "{{RESULTS_HTML}}": results_html(case.get("results") or []),
         "{{TESTIMONIAL_SECTION}}": testimonial_section(case),
         "{{CASE_CTA_ROW}}": case_cta_row(slug, ordered_slugs, cases_by_slug),
+        "{{ROOT_PREFIX}}": "../../",
     }
 
     out = template
@@ -434,7 +436,7 @@ def case_card_html(case: dict, prefix: str = "") -> str:
     title = case.get("name") or slug
     excerpt = case.get("cardText") or ""
     return f"""          <div class="flex-none snap-center">
-            <a href="{prefix}cases/{slug}.html" class="case-card-link block no-underline">
+            <a href="/cases/{slug}/" class="case-card-link block no-underline">
             <div class="case-card h-[400px] relative overflow-hidden border-solid border-[#000000]/10 border-[1.5px] flex flex-row items-end rounded-[12px]">
               <div class="case-card-bg" style="background-image:url(/assets/cases/{slug}/{esc(hero)})" aria-hidden="true"></div>
               <div class="case-card-scrim" aria-hidden="true"></div>
@@ -454,7 +456,7 @@ def featured_case_html(case: dict, prefix: str = "") -> str:
     excerpt = case.get("cardText") or ""
     if len(excerpt) > 100:
         excerpt = excerpt[:97] + "…"
-    return f"""          <a href="{prefix}cases/{slug}.html" class="hero-featured-card no-underline" aria-label="Ver case {esc(title)}">
+    return f"""          <a href="/cases/{slug}/" class="hero-featured-card no-underline" aria-label="Ver case {esc(title)}">
             <span class="hero-featured-arrow" aria-hidden="true">{CASE_ARROW_SVG}</span>
             <p class="hero-featured-label font-[STIX_Two_Text_Italic]">Case em destaque</p>
             <div class="hero-featured-copy">
@@ -466,7 +468,7 @@ def featured_case_html(case: dict, prefix: str = "") -> str:
 
 def remove_stale_featured(content: str) -> str:
     pattern = re.compile(
-        r"(<!-- CASES_FEATURED_END -->)\s*<a href=\"cases/[^\"]+\.html\" class=\"(?:gap-\[1rem\]|hero-featured-card)[^\"]*\".*?</a>\s*",
+        r"(<!-- CASES_FEATURED_END -->)\s*<a href=\"(?:/)?cases/[^\"]+(?:\.html|/)\" class=\"(?:gap-\[1rem\]|hero-featured-card)[^\"]*\".*?</a>\s*",
         re.DOTALL,
     )
     return pattern.sub(r"\1\n", content)
@@ -489,13 +491,25 @@ def patch_between(content: str, start: str, end: str, replacement: str) -> str:
     return pattern.sub(block, content, count=1)
 
 
+def cases_listing_path() -> Path:
+    nested = ROOT / "cases" / "index.html"
+    if nested.exists():
+        return nested
+    legacy = ROOT / "cases.html"
+    if legacy.exists():
+        nested.parent.mkdir(parents=True, exist_ok=True)
+        legacy.rename(nested)
+        print(f"migrated cases.html -> cases/index.html")
+    return nested
+
+
 def update_listings(cases: list[dict]) -> None:
     grid = "\n".join(case_card_html(c) for c in cases)
-    cases_html = ROOT / "cases.html"
+    cases_html = cases_listing_path()
     text = remove_stale_cards(cases_html.read_text(encoding="utf-8"))
     text = patch_between(text, GRID_START, GRID_END, grid)
     cases_html.write_text(text, encoding="utf-8")
-    print(f"updated {cases_html.name} grid ({len(cases)} cases)")
+    print(f"updated {cases_html.relative_to(ROOT)} grid ({len(cases)} cases)")
 
     index_html = ROOT / "index.html"
     text = remove_stale_cards(index_html.read_text(encoding="utf-8"))
@@ -509,8 +523,12 @@ def update_listings(cases: list[dict]) -> None:
 
 
 def ensure_markers() -> None:
-    for rel in ("cases.html", "index.html"):
+    for rel in ("cases/index.html", "index.html"):
         path = ROOT / rel
+        if not path.exists() and rel == "cases/index.html":
+            path = cases_listing_path()
+        if not path.exists():
+            continue
         text = path.read_text(encoding="utf-8")
         changed = False
         if GRID_START not in text:
@@ -542,9 +560,14 @@ def main() -> None:
     template = TEMPLATE_PATH.read_text(encoding="utf-8")
     for case in cases:
         slug = case["slug"]
-        out_path = ROOT / "cases" / f"{slug}.html"
+        out_dir = ROOT / "cases" / slug
+        out_dir.mkdir(parents=True, exist_ok=True)
+        out_path = out_dir / "index.html"
         out_path.write_text(render_case(case, ordered_slugs, cases_by_slug), encoding="utf-8")
-        print(f"built cases/{slug}.html")
+        legacy = ROOT / "cases" / f"{slug}.html"
+        if legacy.exists():
+            legacy.unlink()
+        print(f"built cases/{slug}/index.html")
 
     update_listings(cases)
     print("done")

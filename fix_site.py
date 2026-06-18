@@ -4,6 +4,7 @@
 
 import json
 import re
+import shutil
 from pathlib import Path
 
 ROOT = Path(__file__).parent
@@ -34,58 +35,76 @@ PAGE_META = {
         "description": "Consultoria de branding e posicionamento para o mercado imobiliário. Metodologia Intelligence para construtoras e incorporadoras.",
         "path": "",
     },
-    "cases.html": {
+    "cases/index.html": {
         "title": "Cases — Dois Intelligence",
         "description": "Cases de branding imobiliário: Trifold, Yarden e mais projetos da Dois Intelligence.",
-        "path": "cases.html",
+        "path": "cases/",
     },
-    "metodologia.html": {
+    "metodologia/index.html": {
         "title": "Metodologia — Dois Intelligence",
         "description": "Conheça a Metodologia Intelligence da Dois Intelligence para posicionar seu empreendimento.",
-        "path": "metodologia.html",
+        "path": "metodologia/",
     },
-    "contato.html": {
+    "contato/index.html": {
         "title": "Contato — Dois Intelligence",
         "description": "Fale com a Dois Intelligence. Branding e consultoria para o mercado imobiliário.",
-        "path": "contato.html",
+        "path": "contato/",
     },
-    "blog.html": {
+    "blog/index.html": {
         "title": "Blog — Dois Intelligence",
         "description": "Em breve: conteúdos sobre branding imobiliário da Dois Intelligence.",
-        "path": "blog.html",
+        "path": "blog/",
     },
     "404.html": {
         "title": "Página não encontrada — Dois Intelligence",
         "description": "A página que você procura não existe.",
         "path": "404.html",
     },
-    "obrigado.html": {
+    "obrigado/index.html": {
         "title": "Mensagem enviada — Dois Intelligence",
         "description": "Recebemos sua mensagem. Em breve entraremos em contato.",
-        "path": "obrigado.html",
+        "path": "obrigado/",
     },
-    "cases/trifold.html": {
+    "cases/trifold/index.html": {
         "title": "Case Trifold — Dois Intelligence",
         "description": "Case Trifold: reposicionamento de marca e marketing para construtora de alto padrão pela Dois Intelligence.",
-        "path": "cases/trifold.html",
+        "path": "cases/trifold/",
     },
-    "cases/yarden.html": {
+    "cases/yarden/index.html": {
         "title": "Case Yarden — Dois Intelligence",
         "description": "Case Yarden: branding, marketing e audiovisual para lançamento imobiliário em Maringá. Mais de 70% das unidades vendidas em 3 dias.",
-        "path": "cases/yarden.html",
+        "path": "cases/yarden/",
     },
 }
 
-NOINDEX_PAGES = frozenset({"404.html", "obrigado.html", "blog.html"})
+NOINDEX_PAGES = frozenset({"404.html", "obrigado/index.html", "blog/index.html"})
 
 SITEMAP_PATHS = [
     "",
-    "cases.html",
-    "metodologia.html",
-    "contato.html",
-    "cases/trifold.html",
-    "cases/yarden.html",
+    "cases/",
+    "metodologia/",
+    "contato/",
+    "cases/trifold/",
+    "cases/yarden/",
 ]
+
+PAGE_MIGRATIONS = [
+    ("contato.html", "contato/index.html"),
+    ("metodologia.html", "metodologia/index.html"),
+    ("blog.html", "blog/index.html"),
+    ("obrigado.html", "obrigado/index.html"),
+    ("cases.html", "cases/index.html"),
+]
+
+REDIRECT_TARGETS = {
+    "contato.html": "/contato/",
+    "metodologia.html": "/metodologia/",
+    "blog.html": "/blog/",
+    "obrigado.html": "/obrigado/",
+    "cases.html": "/cases/",
+    "cases/trifold.html": "/cases/trifold/",
+    "cases/yarden.html": "/cases/yarden/",
+}
 
 DEFAULT_OG_IMAGE = "/assets/home/loading-overlay-intro-second-frame-hole-wrapper-hole-im.webp"
 
@@ -95,8 +114,8 @@ FAVICON_PATH = "/assets/library/favicon.png"
 FAVICON_CASES_PATH = "../assets/library/favicon.png"
 
 CASE_OG_IMAGES = {
-    "cases/trifold.html": "/assets/cases/trifold/imagem-principal.webp",
-    "cases/yarden.html": "/assets/cases/yarden/imagem-principal.webp",
+    "cases/trifold/index.html": "/assets/cases/trifold/imagem-principal.webp",
+    "cases/yarden/index.html": "/assets/cases/yarden/imagem-principal.webp",
 }
 
 SEO_STRIP_RE = re.compile(
@@ -117,19 +136,37 @@ SLIDER_CORRUPT_RE = re.compile(
 
 HTML_FILES = [
     "index.html",
-    "cases.html",
-    "metodologia.html",
-    "contato.html",
-    "blog.html",
+    "cases/index.html",
+    "metodologia/index.html",
+    "contato/index.html",
+    "blog/index.html",
     "404.html",
-    "obrigado.html",
-    "cases/trifold.html",
-    "cases/yarden.html",
+    "obrigado/index.html",
+    "cases/trifold/index.html",
+    "cases/yarden/index.html",
 ]
 
 
+def asset_prefix(rel: str) -> str:
+    depth = rel.count("/")
+    return "../" * depth if depth else ""
+
+
 def prefix_for(rel: str) -> str:
-    return "../" if rel.startswith("cases/") else ""
+    return asset_prefix(rel)
+
+
+def is_case_detail(rel: str) -> bool:
+    return bool(re.match(r"cases/[^/]+/index\.html$", rel))
+
+
+def page_slug_from_rel(rel: str) -> str:
+    if rel == "index.html":
+        return "home"
+    parts = Path(rel).parts
+    if parts[-1] == "index.html" and len(parts) > 1:
+        return parts[-2]
+    return Path(rel).stem
 
 
 def fix_slider(content: str, rel: str) -> str:
@@ -142,7 +179,7 @@ def fix_slider(content: str, rel: str) -> str:
         'class="flex flex-col w-[100%] gap-[1rem]"',
         1,
     )
-    src = SLIDER_SRC["cases/"] if rel.startswith("cases/") else SLIDER_SCRIPT
+    src = f"{asset_prefix(rel)}{SLIDER_SCRIPT}"
     tag = f'  <script src="{src}"></script>\n'
     if "slider.js" not in content:
         content = content.replace(
@@ -206,14 +243,14 @@ def build_nav_html(p: str) -> str:
         'w-[auto] bg-[#333333]/30 max-lg:w-[100%]" id="site-navbar-inner">'
         '<div class="flex flex-row justify-between items-center gap-[48px] max-lg:gap-[40px] '
         'max-md:gap-0 w-full h-[40px]">'
-        f'<a class="flex items-center justify-center text-[#ffffff] no-underline shrink-0" id="logo" href="{p}index.html">'
+        f'<a class="flex items-center justify-center text-[#ffffff] no-underline shrink-0" id="logo" href="/">'
         f'<img class="h-auto max-w-full w-[100px]" src="{p}assets/shared/navigation--logo.svg" alt="Dois Intelligence" />'
         '</a>'
         '<div class="nav-desktop-links shrink-0 flex items-center gap-[32px] grow justify-center">'
-        f'<a class="focus:outline-none nav-link uppercase no-underline opacity-[60%] hover:opacity-[100%] text-[#ffffff] font-[DM_Sans_9pt_Regular] font-[400] tracking-[0.1em] text-[12px]" href="{p}cases.html">Cases</a>'
-        f'<a class="focus:outline-none nav-link uppercase no-underline opacity-[60%] hover:opacity-[100%] text-[#ffffff] font-[DM_Sans_9pt_Regular] font-[400] tracking-[0.1em] text-[12px]" href="{p}metodologia.html">Metodologia</a>'
+        '<a class="focus:outline-none nav-link uppercase no-underline opacity-[60%] hover:opacity-[100%] text-[#ffffff] font-[DM_Sans_9pt_Regular] font-[400] tracking-[0.1em] text-[12px]" href="/cases/">Cases</a>'
+        '<a class="focus:outline-none nav-link uppercase no-underline opacity-[60%] hover:opacity-[100%] text-[#ffffff] font-[DM_Sans_9pt_Regular] font-[400] tracking-[0.1em] text-[12px]" href="/metodologia/">Metodologia</a>'
         '</div>'
-        f'<a class="nav-cta nav-desktop-cta font-dm-sans-9pt-regular font-bold uppercase tracking-[0.025em] text-[12px] no-underline" href="{p}contato.html"><span>Contato</span></a>'
+        '<a class="nav-cta nav-desktop-cta font-dm-sans-9pt-regular font-bold uppercase tracking-[0.025em] text-[12px] no-underline" href="/contato/"><span>Contato</span></a>'
         '<button class="nav-hamburger" id="nav-hamburger-btn" aria-label="Abrir menu" '
         'aria-expanded="false" aria-controls="nav-mobile-menu">'
         + _NAV_HAMBURGER_ICON
@@ -221,9 +258,9 @@ def build_nav_html(p: str) -> str:
         + '</button>'
         '</div>'
         '<div class="nav-mobile-menu" id="nav-mobile-menu" role="menu">'
-        f'<a class="nav-mobile-link" href="{p}cases.html" role="menuitem">Cases</a>'
-        f'<a class="nav-mobile-link" href="{p}metodologia.html" role="menuitem">Metodologia</a>'
-        f'<a class="nav-mobile-link" href="{p}contato.html" role="menuitem">Contato</a>'
+        '<a class="nav-mobile-link" href="/cases/" role="menuitem">Cases</a>'
+        '<a class="nav-mobile-link" href="/metodologia/" role="menuitem">Metodologia</a>'
+        '<a class="nav-mobile-link" href="/contato/" role="menuitem">Contato</a>'
         '</div>'
         '</div>'
         '</section>'
@@ -246,7 +283,11 @@ def fix_nav_and_footer(content: str, rel: str) -> str:
     # Logo
     content = content.replace(
         f'<div class="flex items-center justify-center text-[#ffffff] max-md:order-1" id="logo" href="{p}index.html">',
+        '<a class="flex items-center justify-center text-[#ffffff] max-md:order-1 no-underline" id="logo" href="/">',
+    )
+    content = content.replace(
         f'<a class="flex items-center justify-center text-[#ffffff] max-md:order-1 no-underline" id="logo" href="{p}index.html">',
+        '<a class="flex items-center justify-center text-[#ffffff] max-md:order-1 no-underline" id="logo" href="/">',
     )
     content = content.replace(
         f'<img class="h-auto max-w-full h-[auto] max-w-[100%] w-[100px]" src="{p}assets/shared/navigation--logo.svg" alt="" href="{p}index.html" />',
@@ -261,17 +302,13 @@ def fix_nav_and_footer(content: str, rel: str) -> str:
 
     # Contato button in nav (YCode exports button+href)
     content = re.sub(
-        r'<button class="(font-\[DM_Sans_9pt_Regular\][^"]*max-md:order-2)" href="('
-        + re.escape(p)
-        + r'contato\.html)">\s*<span>Contato</span>\s*</a>',
-        r'<a class="\1 no-underline" href="\2"><span>Contato</span></a>',
+        r'<button class="(font-\[DM_Sans_9pt_Regular\][^"]*max-md:order-2)" href="(?:\.\./)*(?:contato\.html|/contato/)">\s*<span>Contato</span>\s*</a>',
+        r'<a class="\1 no-underline" href="/contato/"><span>Contato</span></a>',
         content,
     )
     content = re.sub(
-        r'<button class="(font-\[DM_Sans_9pt_Regular\][^"]*max-md:order-2)" href="('
-        + re.escape(p)
-        + r'contato\.html)">\s*<span>Contato</span>\s*</button>',
-        r'<a class="\1 no-underline" href="\2"><span>Contato</span></a>',
+        r'<button class="(font-\[DM_Sans_9pt_Regular\][^"]*max-md:order-2)" href="(?:\.\./)*(?:contato\.html|/contato/)">\s*<span>Contato</span>\s*</button>',
+        r'<a class="\1 no-underline" href="/contato/"><span>Contato</span></a>',
         content,
     )
 
@@ -280,19 +317,23 @@ def fix_nav_and_footer(content: str, rel: str) -> str:
     content = remove_footer_blog_link(content)
 
     # Footer links: p with href -> a
-    for page in [
-        "index.html",
-        "cases.html",
-        "metodologia.html",
-        "contato.html",
+    for href, label in [
+        ("/", "Home"),
+        ("/cases/", "Cases"),
+        ("/metodologia/", "Metodologia"),
+        ("/contato/", "Contato"),
     ]:
         content = content.replace(
-            f'<p class="focus:outline-none nav-link uppercase no-underline opacity-[60%] hover:opacity-[100%] text-[#ffffff] font-[DM_Sans_9pt_Regular] font-[400] tracking-[0.1em] text-[12px]" href="{p}{page}">',
-            f'<a class="focus:outline-none nav-link uppercase no-underline opacity-[60%] hover:opacity-[100%] text-[#ffffff] font-[DM_Sans_9pt_Regular] font-[400] tracking-[0.1em] text-[12px]" href="{p}{page}">',
+            f'<p class="focus:outline-none nav-link uppercase no-underline opacity-[60%] hover:opacity-[100%] text-[#ffffff] font-[DM_Sans_9pt_Regular] font-[400] tracking-[0.1em] text-[12px]" href="{href}">',
+            f'<a class="focus:outline-none nav-link uppercase no-underline opacity-[60%] hover:opacity-[100%] text-[#ffffff] font-[DM_Sans_9pt_Regular] font-[400] tracking-[0.1em] text-[12px]" href="{href}">',
         )
-        label = page.replace(".html", "").capitalize()
-        if page == "index.html":
-            label = "Home"
+        for legacy in (href, f"{p}{label.lower()}.html", f"{p}index.html" if label == "Home" else ""):
+            if not legacy:
+                continue
+            content = content.replace(
+                f'<p class="focus:outline-none nav-link uppercase no-underline opacity-[60%] hover:opacity-[100%] text-[#ffffff] font-[DM_Sans_9pt_Regular] font-[400] tracking-[0.1em] text-[12px]" href="{legacy}">',
+                f'<a class="focus:outline-none nav-link uppercase no-underline opacity-[60%] hover:opacity-[100%] text-[#ffffff] font-[DM_Sans_9pt_Regular] font-[400] tracking-[0.1em] text-[12px]" href="{href}">',
+            )
         content = content.replace(f">{label}</p>", f">{label}</a>")
 
     # WhatsApp floating
@@ -349,9 +390,7 @@ def formspree_thank_you_url(config: dict) -> str:
 
 
 def contact_form_open(rel: str, config: dict) -> str:
-    page = Path(rel).stem or "home"
-    if page == "index":
-        page = "home"
+    page = page_slug_from_rel(rel)
     return (
         f'<form class="contact-form flex flex-col w-full gap-[24px] items-end" '
         f'action="{formspree_action_url(config)}" method="POST">'
@@ -411,7 +450,7 @@ def fix_hero_cta(content: str, rel: str) -> str:
         '          <div class="justify-center border-[transparent] border-[1px] border-solid focus:outline-none leading-[1.5em] font-dm-sans-9pt-regular rounded-[9999px] tracking-[0px] backdrop-blur-[8px] opacity-[100%] items-center text-[16px] font-semibold font-[DM_Sans_9pt_Regular] leading-[1.5] tracking-[0] uppercase pt-[8px] pr-[8px] pb-[8px] pl-[20px] mt-[36px] border-transparent bg-[#ffffff]/10 text-[#ffffff] flex-wrap w-a flex flex-row gap-[10px] w-a w-u w-uto w-ut" id="bttn" type="button">'
     )
     new = (
-        f'          <a href="{p}contato.html" class="justify-center border-[transparent] border-[1px] border-solid focus:outline-none leading-[1.5em] font-dm-sans-9pt-regular rounded-[9999px] tracking-[0px] backdrop-blur-[8px] opacity-[100%] items-center text-[16px] font-semibold font-[DM_Sans_9pt_Regular] leading-[1.5] tracking-[0] uppercase pt-[8px] pr-[8px] pb-[8px] pl-[20px] mt-[36px] border-transparent bg-[#ffffff]/10 text-[#ffffff] flex-wrap w-a flex flex-row gap-[10px] w-a w-u w-uto w-ut no-underline" id="bttn">'
+        f'          <a href="/contato/" class="justify-center border-[transparent] border-[1px] border-solid focus:outline-none leading-[1.5em] font-dm-sans-9pt-regular rounded-[9999px] tracking-[0px] backdrop-blur-[8px] opacity-[100%] items-center text-[16px] font-semibold font-[DM_Sans_9pt_Regular] leading-[1.5] tracking-[0] uppercase pt-[8px] pr-[8px] pb-[8px] pl-[20px] mt-[36px] border-transparent bg-[#ffffff]/10 text-[#ffffff] flex-wrap w-a flex flex-row gap-[10px] w-a w-u w-uto w-ut no-underline" id="bttn">'
     )
     if old in content:
         content = content.replace(old, new, 1)
@@ -424,28 +463,18 @@ def fix_hero_cta(content: str, rel: str) -> str:
 
 
 def fix_case_page_buttons(content: str, rel: str) -> str:
-    if rel == "cases/trifold.html":
-        content = content.replace(
-            'type="button" href="../_case-template.html"',
-            'href="../cases.html"',
-        )
-        content = re.sub(
-            r"<button([^>]*href=\"../cases\.html\"[^>]*)>",
-            r"<a\1>",
-            content,
-        )
-        content = content.replace("</button>", "</a>", 1)
-    if rel == "cases/yarden.html":
-        content = content.replace(
-            'type="button" href="../_case-template.html"',
-            'href="../cases.html"',
-        )
-        content = re.sub(
-            r"<button([^>]*href=\"../cases\.html\"[^>]*)>",
-            r"<a\1>",
-            content,
-        )
-        content = content.replace("</button>", "</a>", 1)
+    if not is_case_detail(rel):
+        return content
+    content = content.replace(
+        'type="button" href="../_case-template.html"',
+        'href="/cases/"',
+    )
+    content = re.sub(
+        r"<button([^>]*href=\"(?:\.\./)?cases\.html\"[^>]*)>",
+        r"<a\1>",
+        content,
+    )
+    content = content.replace("</button>", "</a>", 1)
     return content
 
 
@@ -459,7 +488,7 @@ def inject_seo(content: str, rel: str) -> str:
         og_image = f"{DOMAIN}{HOME_OG_IMAGE}"
     else:
         og_image = f"{DOMAIN}{CASE_OG_IMAGES.get(rel, DEFAULT_OG_IMAGE)}"
-    favicon = FAVICON_CASES_PATH if rel.startswith("cases/") else FAVICON_PATH
+    favicon = FAVICON_PATH
 
     content = re.sub(r"<title>[^<]*</title>", f"<title>{meta['title']}</title>", content, count=1)
     content = re.sub(
@@ -532,7 +561,7 @@ def fix_index_intro_headings(content: str, rel: str) -> str:
 
 
 def fix_case_cta_heading(content: str, rel: str) -> str:
-    if not rel.startswith("cases/"):
+    if not is_case_detail(rel):
         return content
     return content.replace(
         '<h1 class="tracking-[-0.02em] leading-[1.1] text-center max-md:text-[36px] font-[400] text-[48px]">Seja o nosso próximo case!</h1>',
@@ -567,13 +596,12 @@ def generate_robots_txt() -> None:
 
 
 def fix_blog_body(content: str, rel: str) -> str:
-    if rel != "blog.html":
+    if rel != "blog/index.html":
         return content
-    p = ""
-    snippet = f"""  <main class="min-h-[60vh] flex flex-col items-center justify-center px-[32px] py-[120px] text-center bg-[#0a0a0a] text-[#ffffff]">
+    snippet = """  <main class="min-h-[60vh] flex flex-col items-center justify-center px-[32px] py-[120px] text-center bg-[#0a0a0a] text-[#ffffff]">
     <h1 class="font-[STIX_Two_Text] text-[48px] mb-[16px]">Blog</h1>
     <p class="font-[DM_Sans_9pt_Regular] text-[18px] opacity-[60%] max-w-[480px]">Em breve publicaremos conteúdos sobre branding imobiliário.</p>
-    <a href="{p}index.html" class="mt-[32px] uppercase tracking-[0.1em] text-[12px] opacity-[80%] hover:opacity-100 no-underline text-[#ffffff]">Voltar ao início</a>
+    <a href="/" class="mt-[32px] uppercase tracking-[0.1em] text-[12px] opacity-[80%] hover:opacity-100 no-underline text-[#ffffff]">Voltar ao início</a>
   </main>
 """
     content = content.replace("<body>\n  <div></div>", f"<body>\n{snippet}")
@@ -603,7 +631,7 @@ def fix_root_relative_background_urls(content: str) -> str:
 def normalize_nav_cta(content: str) -> str:
     pattern = re.compile(
         r'<a class="font-\[DM_Sans_9pt_Regular\][^"]*max-md:order-2[^"]*" '
-        r'href="([^"]*contato\.html)"><span>Contato</span></a>',
+        r'href="([^"]*(?:contato\.html|/contato/))"><span>Contato</span></a>',
         re.IGNORECASE,
     )
 
@@ -611,7 +639,7 @@ def normalize_nav_cta(content: str) -> str:
         return (
             f'<a class="nav-cta font-dm-sans-9pt-regular font-bold uppercase '
             f'tracking-[0.025em] text-[12px] max-md:order-2 no-underline" '
-            f'href="{match.group(1)}"><span>Contato</span></a>'
+            f'href="/contato/"><span>Contato</span></a>'
         )
 
     return pattern.sub(repl, content)
@@ -811,12 +839,104 @@ def inject_formspree_script(content: str, rel: str) -> str:
 def normalize_whatsapp_floater(content: str, rel: str) -> str:
     if "wa.me/554488447212" not in content:
         return content
-    prefix = "../" if rel.startswith("cases/") else ""
+    prefix = asset_prefix(rel)
     pattern = re.compile(
         r'<a\s[^>]*href=["\']https://wa\.me/554488447212["\'][^>]*>.*?</a>',
         re.DOTALL | re.IGNORECASE,
     )
     return pattern.sub(whatsapp_floater_markup(prefix), content, count=1)
+
+
+_LEGACY_PAGE_NAMES = frozenset(
+    {"index", "cases", "contato", "metodologia", "blog", "obrigado", "404"}
+)
+
+
+def rewrite_page_urls(content: str) -> str:
+    """Convert legacy .html hrefs to clean URLs."""
+    replacements = [
+        (r'href="(?:\.\./)*index\.html"', 'href="/"'),
+        (r'href="/index\.html"', 'href="/"'),
+        (r'href="(?:\.\./)*cases\.html"', 'href="/cases/"'),
+        (r'href="/cases\.html"', 'href="/cases/"'),
+        (r'href="(?:\.\./)*metodologia\.html"', 'href="/metodologia/"'),
+        (r'href="/metodologia\.html"', 'href="/metodologia/"'),
+        (r'href="(?:\.\./)*contato\.html"', 'href="/contato/"'),
+        (r'href="/contato\.html"', 'href="/contato/"'),
+        (r'href="(?:\.\./)*blog\.html"', 'href="/blog/"'),
+        (r'href="/blog\.html"', 'href="/blog/"'),
+        (r'href="(?:\.\./)*obrigado\.html"', 'href="/obrigado/"'),
+        (r'href="/obrigado\.html"', 'href="/obrigado/"'),
+    ]
+    for pattern, repl in replacements:
+        content = re.sub(pattern, repl, content)
+    content = re.sub(
+        r'href="(?:\.\./)?cases/([a-z0-9-]+)\.html"',
+        r'href="/cases/\1/"',
+        content,
+    )
+    content = re.sub(
+        r'href="/cases/([a-z0-9-]+)\.html"',
+        r'href="/cases/\1/"',
+        content,
+    )
+
+    def sibling_case(match: re.Match) -> str:
+        slug = match.group(1)
+        if slug in _LEGACY_PAGE_NAMES:
+            return match.group(0)
+        return f'href="/cases/{slug}/"'
+
+    content = re.sub(r'href="([a-z0-9-]+)\.html"', sibling_case, content)
+    return content
+
+
+def migrate_clean_url_layout() -> None:
+    for src, dst in PAGE_MIGRATIONS:
+        src_path = ROOT / src
+        dst_path = ROOT / dst
+        if not src_path.exists():
+            continue
+        dst_path.parent.mkdir(parents=True, exist_ok=True)
+        if dst_path.exists():
+            src_path.unlink()
+        else:
+            shutil.move(str(src_path), str(dst_path))
+        print(f"migrated {src} -> {dst}")
+
+    for legacy in ROOT.glob("cases/*.html"):
+        if legacy.name.startswith("_"):
+            continue
+        slug = legacy.stem
+        nested = ROOT / "cases" / slug / "index.html"
+        if nested.exists():
+            legacy.unlink()
+            print(f"removed legacy {legacy.relative_to(ROOT)}")
+
+
+def write_redirect_stub(old_rel: str, target: str) -> None:
+    url = f"{DOMAIN}{target}"
+    html = f"""<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="refresh" content="0; url={url}" />
+  <link rel="canonical" href="{url}" />
+  <script>location.replace("{url}");</script>
+  <title>Redirecionando…</title>
+</head>
+<body><p><a href="{url}">Continuar</a></p></body>
+</html>
+"""
+    path = ROOT / old_rel
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(html, encoding="utf-8")
+    print(f"redirect stub {old_rel} -> {target}")
+
+
+def write_redirect_stubs() -> None:
+    for old_rel, target in REDIRECT_TARGETS.items():
+        write_redirect_stub(old_rel, target)
 
 
 def process_file(rel: str) -> None:
@@ -841,14 +961,17 @@ def process_file(rel: str) -> None:
     text = fix_blog_body(text, rel)
     text = normalize_whatsapp_floater(text, rel)
     text = fix_root_relative_background_urls(text)
+    text = rewrite_page_urls(text)
     text = cleanup_ycode_artifacts(text, rel)
     path.write_text(text, encoding="utf-8")
     print(f"fixed {rel}")
 
 
 def main():
+    migrate_clean_url_layout()
     for rel in HTML_FILES:
         process_file(rel)
+    write_redirect_stubs()
     generate_sitemap()
     generate_robots_txt()
     print("done")
