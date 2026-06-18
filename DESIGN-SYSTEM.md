@@ -303,7 +303,7 @@ Novas páginas **fora da home** normalmente **não** repetem a intro GSAP — ap
 | Breakpoints | `max-md:` (<768px), `max-lg:` — seguir padrões já usados no HTML vizinho |
 | Links | `no-underline` em botões e cards clicáveis; `focus:outline-none` nos links de nav |
 | Acessibilidade | `alt` em logos; `aria-label="WhatsApp"` no FAB |
-| Domínio | `doisintelligence.com.br` (referência SEO em canonicals) |
+| Domínio | `doisintelligence.com` (referência SEO em canonicals) |
 
 ### Checklist rápido — nova página
 

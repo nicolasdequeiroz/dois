@@ -14,7 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).parent
 DATA_DIR = ROOT / "data" / "cases"
 TEMPLATE_PATH = ROOT / "cases" / "_template.html"
-DOMAIN = "https://doisintelligence.com.br"
+DOMAIN = "https://doisintelligence.com"
 
 GRID_START = "<!-- CASES_GRID_START -->"
 GRID_END = "<!-- CASES_GRID_END -->"

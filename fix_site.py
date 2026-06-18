@@ -7,7 +7,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).parent
-DOMAIN = "https://doisintelligence.com.br"
+DOMAIN = "https://doisintelligence.com"
 FORMSPREE_CONFIG_PATH = ROOT / "formspree.config.json"
 FORMSPREE_HIDDEN_FIELDS = re.compile(
     r'<input type="hidden" name="(?:_subject|_next|pagina)"[^>]*/>\s*'
@@ -338,6 +338,26 @@ def inject_seo(content: str, rel: str) -> str:
 """
     if "rel=\"canonical\"" not in content:
         content = content.replace("</head>", head_extra + "</head>", 1)
+    else:
+        content = re.sub(
+            r'<link rel="canonical" href="[^"]*" />',
+            f'<link rel="canonical" href="{canonical}" />',
+            content,
+            count=1,
+        )
+        content = re.sub(
+            r'<meta property="og:url" content="[^"]*" />',
+            f'<meta property="og:url" content="{canonical}" />',
+            content,
+            count=1,
+        )
+        if not rel.startswith("cases/"):
+            content = re.sub(
+                r'<meta property="og:image" content="[^"]*" />',
+                f'<meta property="og:image" content="{og_image}" />',
+                content,
+                count=1,
+            )
 
     # Fix favicon path for case subpages
     if rel.startswith("cases/"):

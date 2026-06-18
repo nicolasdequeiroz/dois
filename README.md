@@ -65,7 +65,7 @@ python3 build_cases.py && python3 fix_site.py
 
 1. Push deste repositório para o GitHub (branch `main`, raiz do repo).
 2. **Settings → Pages →** Deploy from branch `main`, pasta `/ (root)`.
-3. Domínio: o arquivo [`CNAME`](CNAME) aponta para `doisintelligence.com.br`.
+3. Domínio: o arquivo [`CNAME`](CNAME) aponta para `doisintelligence.com`.
 4. No registrador do domínio, configure os registros DNS conforme a [documentação do GitHub Pages](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site).
 5. Ative **Enforce HTTPS** após a propagação do DNS.
 
