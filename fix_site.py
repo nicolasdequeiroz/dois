@@ -2,11 +2,18 @@
 # -*- coding: utf-8 -*-
 """Apply GitHub Pages fixes to exported HTML files."""
 
+import json
 import re
 from pathlib import Path
 
 ROOT = Path(__file__).parent
 DOMAIN = "https://doisintelligence.com.br"
+FORMSPREE_CONFIG_PATH = ROOT / "formspree.config.json"
+FORMSPREE_HIDDEN_FIELDS = re.compile(
+    r'<input type="hidden" name="(?:_subject|_next|pagina)"[^>]*/>\s*'
+    r'|<input type="text" name="_gotcha"[^>]*/>\s*',
+    re.IGNORECASE,
+)
 SLIDER_SCRIPT = "assets/shared/slider.js"
 
 # path from file -> slider script src
@@ -46,6 +53,11 @@ PAGE_META = {
         "description": "A página que você procura não existe.",
         "path": "404.html",
     },
+    "obrigado.html": {
+        "title": "Mensagem enviada — Dois Intelligence",
+        "description": "Recebemos sua mensagem. Em breve entraremos em contato.",
+        "path": "obrigado.html",
+    },
     "cases/trifold.html": {
         "title": "Case Trifold — Dois Intelligence",
         "description": "Case de branding imobiliário Trifold pela Dois Intelligence.",
@@ -70,6 +82,7 @@ HTML_FILES = [
     "contato.html",
     "blog.html",
     "404.html",
+    "obrigado.html",
     "cases/trifold.html",
     "cases/yarden.html",
 ]
@@ -198,13 +211,50 @@ def hide_form_placeholders(content: str) -> str:
     return content
 
 
+def load_formspree_config() -> dict:
+    with FORMSPREE_CONFIG_PATH.open(encoding="utf-8") as f:
+        return json.load(f)
+
+
+def formspree_action_url(config: dict) -> str:
+    return f"https://formspree.io/f/{config['form_id']}"
+
+
+def formspree_thank_you_url(config: dict) -> str:
+    path = config.get("thank_you_path", "/obrigado.html")
+    if path.startswith("http"):
+        return path
+    return DOMAIN.rstrip("/") + path
+
+
+def contact_form_open(rel: str, config: dict) -> str:
+    page = Path(rel).stem or "home"
+    if page == "index":
+        page = "home"
+    return (
+        f'<form class="flex flex-col w-full gap-[24px] items-end" '
+        f'action="{formspree_action_url(config)}" method="POST">'
+        f'<input type="hidden" name="_subject" value="Novo contato — Dois Intelligence ({page})" />'
+        f'<input type="hidden" name="_next" value="{formspree_thank_you_url(config)}" />'
+        f'<input type="hidden" name="pagina" value="{page}" />'
+        f'<input type="text" name="_gotcha" tabindex="-1" autocomplete="off" '
+        f'style="position:absolute;left:-9999px" aria-hidden="true" />'
+    )
+
+
 def fix_forms(content: str, rel: str) -> str:
-    p = prefix_for(rel)
-    # Until Formspree: CTA via WhatsApp on submit
-    wa = "https://wa.me/554488447212?text=Ol%C3%A1%2C%20gostaria%20de%20falar%20com%20a%20Dois%20Intelligence"
-    content = content.replace(
-        '<form class="flex flex-col w-full gap-[24px] items-end" action="" method="POST">',
-        f'<form class="flex flex-col w-full gap-[24px] items-end" action="{wa}" method="get" target="_blank" rel="noopener noreferrer">',
+    config = load_formspree_config()
+    content = FORMSPREE_HIDDEN_FIELDS.sub("", content)
+    content = re.sub(
+        r'<form class="flex flex-col w-full gap-\[24px\] items-end"[^>]*>',
+        contact_form_open(rel, config),
+        content,
+    )
+    content = content.replace('name="email" type="tel"', 'name="phone" type="tel"')
+    content = re.sub(
+        r'(<p[^>]*>Qual o tipo do seu negócio\?</p>\s*<select)(?!\s+name=)',
+        r'\1 name="business_type"',
+        content,
     )
     # Form submit buttons only (not hero CTA)
     content = re.sub(

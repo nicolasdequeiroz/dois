@@ -69,6 +69,12 @@ python3 build_cases.py && python3 fix_site.py
 4. No registrador do domínio, configure os registros DNS conforme a [documentação do GitHub Pages](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site).
 5. Ative **Enforce HTTPS** após a propagação do DNS.
 
-## Formulários
+## Formulários (Formspree)
 
-Enquanto não houver backend, os formulários redirecionam para o WhatsApp. Para usar Formspree ou Web3Forms, altere o `action` dos `<form>` em `index.html` e `contato.html`.
+Os formulários de contato enviam via [Formspree](https://formspree.io/) (compatível com GitHub Pages).
+
+1. Crie um form em [formspree.io](https://formspree.io/) e copie o ID (ex.: `xyzabcde`).
+2. Edite [`formspree.config.json`](formspree.config.json) e substitua `YOUR_FORM_ID` pelo seu ID.
+3. Rode `python3 fix_site.py` para aplicar o ID em todas as páginas com formulário.
+
+Após o envio, o visitante é redirecionado para [`obrigado.html`](obrigado.html). O botão flutuante do WhatsApp continua disponível para contato direto.
