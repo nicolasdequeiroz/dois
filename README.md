@@ -71,7 +71,7 @@ python3 build_cases.py && python3 fix_site.py
 
 ## Formulários (Formspree)
 
-Os formulários de contato enviam via [Formspree](https://formspree.io/) (compatível com GitHub Pages).
+Os formulários de contato enviam via [Formspree](https://formspree.io/) (compatível com GitHub Pages). No plano gratuito, o redirect usa JavaScript (`assets/shared/formspree.js`) para levar o visitante a [`obrigado.html`](obrigado.html) após o envio.
 
 1. Crie um form em [formspree.io](https://formspree.io/) e copie o ID (ex.: `xyzabcde`).
 2. Edite [`formspree.config.json`](formspree.config.json) e substitua `YOUR_FORM_ID` pelo seu ID.

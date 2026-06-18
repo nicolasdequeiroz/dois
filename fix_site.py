@@ -9,6 +9,12 @@ from pathlib import Path
 ROOT = Path(__file__).parent
 DOMAIN = "https://doisintelligence.com"
 FORMSPREE_CONFIG_PATH = ROOT / "formspree.config.json"
+SITE_NAVBAR_RE = re.compile(
+    r'<section[^>]+id="site-navbar"[\s\S]*?</section>'
+    r'(?:\s*<script>\(function\(\)[\s\S]*?</script>)?',
+    re.DOTALL,
+)
+
 FORMSPREE_HIDDEN_FIELDS = re.compile(
     r'<input type="hidden" name="(?:_subject|_next|pagina)"[^>]*/>\s*'
     r'|<input type="text" name="_gotcha"[^>]*/>\s*',
@@ -117,6 +123,87 @@ def fix_case_links(content: str, rel: str) -> str:
     content = content.replace('href="_case-template.html"', "")
     content = content.replace('href="../_case-template.html"', "")
     return content
+
+
+_NAV_HAMBURGER_JS = (
+    "<script>(function(){var btn=document.getElementById('nav-hamburger-btn');"
+    "var menu=document.getElementById('nav-mobile-menu');"
+    "var inner=document.getElementById('site-navbar-inner');"
+    "var hi=btn&&btn.querySelector('.nav-hamburger-icon');"
+    "var ci=btn&&btn.querySelector('.nav-close-icon');"
+    "if(!btn||!menu)return;"
+    "btn.addEventListener('click',function(){var o=menu.classList.toggle('is-open');"
+    "btn.setAttribute('aria-expanded',o);"
+    "hi&&(hi.style.display=o?'none':'block');"
+    "ci&&(ci.style.display=o?'block':'none');"
+    "inner&&inner.classList.toggle('nav-open',o);});"
+    "document.addEventListener('click',function(e){"
+    "if(menu.classList.contains('is-open')&&!inner.contains(e.target)){"
+    "menu.classList.remove('is-open');"
+    "btn.setAttribute('aria-expanded','false');"
+    "hi&&(hi.style.display='block');"
+    "ci&&(ci.style.display='none');"
+    "inner&&inner.classList.remove('nav-open');}});})();</script>"
+)
+
+_NAV_HAMBURGER_ICON = (
+    '<svg class="nav-hamburger-icon" width="22" height="16" viewBox="0 0 22 16" '
+    'fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'
+    '<rect y="0" width="22" height="2" rx="1" fill="white"/>'
+    '<rect y="7" width="22" height="2" rx="1" fill="white"/>'
+    '<rect y="14" width="22" height="2" rx="1" fill="white"/></svg>'
+)
+
+_NAV_CLOSE_ICON = (
+    '<svg class="nav-close-icon" width="16" height="16" viewBox="0 0 16 16" '
+    'fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="display:none">'
+    '<path d="M1 1L15 15M15 1L1 15" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>'
+)
+
+
+def build_nav_html(p: str) -> str:
+    return (
+        '<section class="font-[400] font-[DM_Sans_9pt_Regular] pr-0 pl-0 mt-0 top-0 right-0 '
+        'left-0 flex-col flex top-[0px] right-[0px] left-[0px] fixed font-dm-sans-9pt-regular '
+        'pl-[0px] pr-[0px] z-[100] mt-[0px] pb-[16px] pt-[16px] max-md:pl-[16px] max-md:pr-[16px]" '
+        'id="site-navbar">'
+        '<div class="mr-auto ml-auto flex flex-col mr-[auto] ml-[auto] max-w-[1000px] '
+        'backdrop-blur-[10px] rounded-[9999px] pt-[8px] pr-[8px] pb-[8px] pl-[24px] '
+        'w-[auto] bg-[#333333]/30 max-lg:w-[100%]" id="site-navbar-inner">'
+        '<div class="flex flex-row justify-between items-center gap-[48px] max-lg:gap-[40px] '
+        'max-md:gap-0 w-full h-[40px]">'
+        f'<a class="flex items-center justify-center text-[#ffffff] no-underline shrink-0" id="logo" href="{p}index.html">'
+        f'<img class="h-auto max-w-full w-[100px]" src="{p}assets/shared/navigation--logo.svg" alt="Dois Intelligence" />'
+        '</a>'
+        '<div class="nav-desktop-links shrink-0 flex items-center gap-[32px] grow justify-center">'
+        f'<a class="focus:outline-none nav-link uppercase no-underline opacity-[60%] hover:opacity-[100%] text-[#ffffff] font-[DM_Sans_9pt_Regular] font-[400] tracking-[0.1em] text-[12px]" href="{p}cases.html">Cases</a>'
+        f'<a class="focus:outline-none nav-link uppercase no-underline opacity-[60%] hover:opacity-[100%] text-[#ffffff] font-[DM_Sans_9pt_Regular] font-[400] tracking-[0.1em] text-[12px]" href="{p}metodologia.html">Metodologia</a>'
+        '</div>'
+        f'<a class="nav-cta nav-desktop-cta font-dm-sans-9pt-regular font-bold uppercase tracking-[0.025em] text-[12px] no-underline" href="{p}contato.html"><span>Contato</span></a>'
+        '<button class="nav-hamburger" id="nav-hamburger-btn" aria-label="Abrir menu" '
+        'aria-expanded="false" aria-controls="nav-mobile-menu">'
+        + _NAV_HAMBURGER_ICON
+        + _NAV_CLOSE_ICON
+        + '</button>'
+        '</div>'
+        '<div class="nav-mobile-menu" id="nav-mobile-menu" role="menu">'
+        f'<a class="nav-mobile-link" href="{p}cases.html" role="menuitem">Cases</a>'
+        f'<a class="nav-mobile-link" href="{p}metodologia.html" role="menuitem">Metodologia</a>'
+        f'<a class="nav-mobile-link" href="{p}contato.html" role="menuitem">Contato</a>'
+        '</div>'
+        '</div>'
+        '</section>'
+        + _NAV_HAMBURGER_JS
+    )
+
+
+def inject_mobile_nav(content: str, rel: str) -> str:
+    p = prefix_for(rel)
+    new_nav = build_nav_html(p)
+    result = SITE_NAVBAR_RE.sub(new_nav, content, count=1)
+    if result == content:
+        return content
+    return result
 
 
 def fix_nav_and_footer(content: str, rel: str) -> str:
@@ -232,7 +319,7 @@ def contact_form_open(rel: str, config: dict) -> str:
     if page == "index":
         page = "home"
     return (
-        f'<form class="flex flex-col w-full gap-[24px] items-end" '
+        f'<form class="contact-form flex flex-col w-full gap-[24px] items-end" '
         f'action="{formspree_action_url(config)}" method="POST">'
         f'<input type="hidden" name="_subject" value="Novo contato — Dois Intelligence ({page})" />'
         f'<input type="hidden" name="_next" value="{formspree_thank_you_url(config)}" />'
@@ -246,7 +333,7 @@ def fix_forms(content: str, rel: str) -> str:
     config = load_formspree_config()
     content = FORMSPREE_HIDDEN_FIELDS.sub("", content)
     content = re.sub(
-        r'<form class="flex flex-col w-full gap-\[24px\] items-end"[^>]*>',
+        r'<form class="(?:contact-form )?flex flex-col w-full gap-\[24px\] items-end"[^>]*>',
         contact_form_open(rel, config),
         content,
     )
@@ -255,6 +342,22 @@ def fix_forms(content: str, rel: str) -> str:
         r'(<p[^>]*>Qual o tipo do seu negócio\?</p>\s*<select)(?!\s+name=)',
         r'\1 name="business_type"',
         content,
+    )
+    content = content.replace(
+        '<div class="hidden bg-[#fee2e2] text-[#991b1b] text-[14px] font-[500] px-[1.5rem] py-[1rem] rounded-[0.75rem]">',
+        '<div class="form-error hidden bg-[#fee2e2] text-[#991b1b] text-[14px] font-[500] px-[1.5rem] py-[1rem] rounded-[0.75rem]">',
+    )
+    content = content.replace(
+        '<div class="hidden bg-[#d1fae5] text-[#065f46] text-[14px] font-[500] px-[1.5rem] py-[1rem] rounded-[0.75rem]">',
+        '<div class="form-success hidden bg-[#d1fae5] text-[#065f46] text-[14px] font-[500] px-[1.5rem] py-[1rem] rounded-[0.75rem]">',
+    )
+    content = content.replace(
+        "<span>Something went wrong! Try submitting form once again.</span>",
+        "<span>Não foi possível enviar. Tente novamente em instantes.</span>",
+    )
+    content = content.replace(
+        "<span>Successfully submitted.</span>",
+        "<span>Mensagem enviada com sucesso.</span>",
     )
     # Form submit buttons only (not hero CTA)
     content = re.sub(
@@ -476,6 +579,23 @@ def strip_ycode_garbage_classes(content: str) -> str:
     return CLASS_ATTR_RE.sub(repl, content)
 
 
+def fix_hero_featured_position(content: str, rel: str) -> str:
+    """Corrige wrapper do case em destaque no hero (YCode exporta 'absoluteto' inválido)."""
+    if rel != "index.html":
+        return content
+    content = content.replace(
+        'class="flex flex-col absoluteto bottom-[0px] w-[100%] max-w-[1280px] ml-auto mr-auto pl-[32px] pr-[32px] items-end pt-[32px] pb-[32px] max-md:hidden"',
+        'class="hero-featured-wrap flex flex-col pl-[32px] pr-[32px] items-end pt-[32px] pb-[32px] max-md:hidden"',
+    )
+    if 'class="hero-featured-wrap' not in content:
+        content = content.replace(
+            "<!-- CASES_FEATURED_START -->",
+            '<div class="hero-featured-wrap flex flex-col pl-[32px] pr-[32px] items-end pt-[32px] pb-[32px] max-md:hidden">\n          <!-- CASES_FEATURED_START -->',
+            1,
+        )
+    return content
+
+
 def cleanup_ycode_artifacts(content: str, rel: str) -> str:
     """Remove common YCode export noise from HTML."""
     content = content.replace("[&#x27;block&#x27;] ", "")
@@ -581,6 +701,20 @@ def dedupe_bttn_ids(content: str) -> str:
     return content
 
 
+def inject_formspree_script(content: str, rel: str) -> str:
+    """Injeta AJAX para redirect customizado no plano gratuito do Formspree."""
+    if "formspree.io/f/" not in content:
+        return content
+    p = prefix_for(rel)
+    script_tag = f'  <script src="{p}assets/shared/formspree.js"></script>'
+    if "formspree.js" in content:
+        return content
+    marker = f'  <script src="{p}assets/shared/mobile-menu.js"></script>'
+    if marker in content:
+        return content.replace(marker, f"{marker}\n{script_tag}", 1)
+    return content.replace("</body>", f"{script_tag}\n</body>", 1)
+
+
 def normalize_whatsapp_floater(content: str, rel: str) -> str:
     if "wa.me/554488447212" not in content:
         return content
@@ -599,11 +733,14 @@ def process_file(rel: str) -> None:
     text = path.read_text(encoding="utf-8")
     text = fix_slider(text, rel)
     text = fix_case_links(text, rel)
+    text = inject_mobile_nav(text, rel)
     text = fix_nav_and_footer(text, rel)
     text = fix_case_cards_manual(text, rel)
     text = hide_form_placeholders(text)
     text = fix_forms(text, rel)
+    text = inject_formspree_script(text, rel)
     text = fix_hero_cta(text, rel)
+    text = fix_hero_featured_position(text, rel)
     text = fix_case_page_buttons(text, rel)
     text = inject_seo(text, rel)
     text = fix_blog_body(text, rel)
