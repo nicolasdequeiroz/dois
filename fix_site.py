@@ -701,6 +701,59 @@ DUPLICATE_SECTION_CLASS_RE = re.compile(
 )
 
 
+def dedupe_class_attributes(content: str) -> str:
+    def repl(match: re.Match) -> str:
+        classes = list(dict.fromkeys(match.group(1).split()))
+        return f'class="{" ".join(classes)}"'
+
+    return CLASS_ATTR_RE.sub(repl, content)
+
+
+def fix_footer_section(content: str) -> str:
+    """Footer logo uses a wide SVG; w-[100%] + object-cover stretches white shapes in some browsers."""
+    content = content.replace(
+        'class="w-[100%] object-cover h-[24px]"',
+        'class="site-footer-logo h-[24px] w-auto max-w-[140px] object-contain"',
+    )
+    content = content.replace(
+        '<section class="flex flex-col w-[100%] pt-[80px] pb-[80px] items-center bg-[#333333]"',
+        '<section id="site-footer" class="flex flex-col w-[100%] pt-[80px] pb-[80px] items-center bg-[#333333]"',
+    )
+    content = content.replace(
+        '<div class="flex flex-col justify-around min-w-fit">\n              <img class="site-footer-logo',
+        '<div class="site-footer-logo-wrap flex flex-col justify-around min-w-fit">\n              <img class="site-footer-logo',
+    )
+    content = content.replace(
+        '<div class="flex gap-[16px] max-md:w-[100%] max-md:items-center max-md:flex max-md:flex-row max-md:flex-wrap max-md:justify-center">\n              <a class="focus:outline-none nav-link',
+        '<div class="site-footer-nav flex gap-[16px] max-md:w-[100%] max-md:items-center max-md:flex max-md:flex-row max-md:flex-wrap max-md:justify-center">\n              <a class="focus:outline-none nav-link',
+    )
+    content = re.sub(
+        r'<span class="w-\[24px\] h-\[24px\] text-\[#ffffff\]"><img(?![^>]*class=) src="([^"]+)" alt="([^"]*)" /></span>',
+        r'<span class="site-footer-social flex shrink-0 items-center justify-center w-[24px] h-[24px] text-[#ffffff]">'
+        r'<img class="h-[24px] w-[24px] object-contain" src="\1" alt="\2" /></span>',
+        content,
+    )
+    if 'site-footer-inner' not in content:
+        content = content.replace(
+            '<div class="flex flex-col max-w-[1280px] w-[100%] pl-[32px] pr-[32px]">',
+            '<div class="site-footer-inner flex flex-col max-w-[1280px] w-[100%] pl-[32px] pr-[32px] max-md:px-[20px]">',
+        )
+        content = content.replace(
+            '<div class="flex flex-col gap-[40px]">',
+            '<div class="site-footer-stack flex flex-col gap-[40px]">',
+            1,
+        )
+    content = content.replace(
+        '<div class="flex gap-[16px] items-center justify-between max-md:flex max-md:flex-col max-md:gap-[32px] max-md:items-center">',
+        '<div class="site-footer-top flex gap-[16px] items-center justify-between max-md:flex max-md:flex-col max-md:gap-[24px] max-md:items-center">',
+    )
+    content = content.replace(
+        '<div class="flex gap-[16px] items-center justify-between max-md:flex max-md:flex-col max-md:items-center max-md:justify-center">',
+        '<div class="site-footer-bottom flex gap-[16px] items-center justify-between max-md:flex max-md:flex-col max-md:gap-[16px] max-md:items-center max-md:justify-center">',
+    )
+    return content
+
+
 def strip_ycode_garbage_classes(content: str) -> str:
     def repl(match: re.Match) -> str:
         classes = [c for c in match.group(1).split() if c not in YCODE_GARBAGE_CLASSES]
@@ -731,6 +784,8 @@ def cleanup_ycode_artifacts(content: str, rel: str) -> str:
     content = content.replace("[&#x27;block&#x27;] ", "")
     content = content.replace(" top-au", "")
     content = strip_ycode_garbage_classes(content)
+    content = dedupe_class_attributes(content)
+    content = fix_footer_section(content)
     content = DUPLICATE_SECTION_CLASS_RE.sub(r"\1", content)
     content = content.replace("no-nderline", "no-underline")
     content = content.replace("no-u ", "no-underline ")

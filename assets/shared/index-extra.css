@@ -537,3 +537,22 @@
     transform: none;
   }
 }
+
+/* Home — menos respiro entre marquee e cases no mobile */
+@media (max-width: 768px) {
+  #marquee {
+    padding-top: 1.25rem !important;
+    padding-bottom: 1.25rem !important;
+    gap: 1.5rem !important;
+  }
+
+  #marquee + section {
+    padding-top: 4.5rem !important;
+    padding-bottom: 3.5rem !important;
+  }
+
+  #marquee + section > div > div:first-child {
+    margin-bottom: 0.5rem !important;
+    width: 100% !important;
+  }
+}
