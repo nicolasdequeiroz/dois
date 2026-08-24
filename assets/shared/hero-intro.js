@@ -26,17 +26,33 @@
 
     // Lógica Condicional de Eixos
     const isMobile = window.innerWidth < 768;
-    const holeWidth = isMobile ? "80vw" : "24vw"; 
-    const holeHeight = isMobile ? "30vh" : "13.5vw"; 
+    const holeWidth = isMobile ? "80vw" : "24vw";
+    const holeHeight = isMobile ? "30vh" : "13.5vw";
     const pushAmount = isMobile ? "18vh" : "14vw"; // Valor do empurrão dinâmico
 
+    // Tamanho do "buraco" em px, para animar via clip-path (composição/pintura)
+    // em vez de width/height (layout), o que evita Cumulative Layout Shift.
+    const vwPx = window.innerWidth;
+    const vhPx = window.innerHeight;
+    const toPx = (value) => {
+      const num = parseFloat(value);
+      if (value.endsWith("vh")) return (num / 100) * vhPx;
+      if (value.endsWith("vw")) return (num / 100) * vwPx;
+      return num;
+    };
+    const holeInsetX = (vwPx - toPx(holeWidth)) / 2;
+    const holeInsetY = (vhPx - toPx(holeHeight)) / 2;
+    const clipCollapsed = `inset(${vhPx / 2}px ${vwPx / 2}px ${vhPx / 2}px ${vwPx / 2}px)`;
+    const clipHole = `inset(${holeInsetY}px ${holeInsetX}px ${holeInsetY}px ${holeInsetX}px)`;
+    const clipFull = "inset(0px 0px 0px 0px)";
+
     if (holeWrap) {
-      gsap.set(holeWrap, { 
-        position: "absolute", top: "50%", left: "50%", xPercent: -50, yPercent: -50, 
-        width: "0vw", height: "0vh", borderRadius: "8px" 
+      gsap.set(holeWrap, {
+        position: "absolute", top: "50%", left: "50%", xPercent: -50, yPercent: -50,
+        width: "100vw", height: "100vh", borderRadius: "8px", clipPath: clipCollapsed
       });
     }
-    
+
     if (holeImg) gsap.set(holeImg, { width: "100vw", height: "100vh", scale: 1.2, transformOrigin: "center center" });
     if (firstText) gsap.set(firstText, { opacity: 0, y: 30 }); 
 
@@ -87,7 +103,7 @@
         // Retorna a posição X ou Y a zero suavemente
         .to([helloLeft, helloRight], { opacity: 1, x: 0, y: 0, duration: 0.5, ease: "power2.out" }, "-=0.2")
         
-        .to(holeWrap, { width: holeWidth, height: holeHeight, duration: 0.6, ease: "power3.out" }, "<");
+        .to(holeWrap, { clipPath: clipHole, duration: 0.6, ease: "power3.out" }, "<");
 
       // Direciona o empurrão (Eixo Y no mobile, Eixo X no desktop)
       if (isMobile) {
@@ -98,7 +114,7 @@
           .to(helloRight, { marginLeft: pushAmount, duration: 0.6, ease: "power3.out" }, "<");
       }
         
-      tl.to(holeWrap, { width: "100vw", height: "100vh", borderRadius: "0px", duration: 0.9, ease: "power3.inOut" }, "+=0.4")
+      tl.to(holeWrap, { clipPath: clipFull, borderRadius: "0px", duration: 0.9, ease: "power3.inOut" }, "+=0.4")
         .to(holeImg, { scale: 1, duration: 0.9, ease: "power3.inOut" }, "<") 
         .to([helloLeft, helloRight], { opacity: 0, scale: 0.9, duration: 0.3, ease: "power2.in" }, "<+=0.2");
     }
