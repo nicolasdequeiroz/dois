@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "dois-site",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "/Users/lucasprado/Documents/GitHub/dois", "-l", "8080"],
+      "port": 8080
+    }
+  ]
+}
